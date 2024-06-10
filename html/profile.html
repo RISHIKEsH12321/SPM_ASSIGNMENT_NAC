@@ -3,20 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link href="../bootstrap assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/navbar.css" rel="stylesheet">
+    <link href="../css/profile.css" rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
-    <div>
-        <img>
-        <p id="profile-name"></p>
+    <div id="navbar" class="cover-container d-flex w-200 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+          <div>
+            <h3 id="nav-name" class="float-md-start mb-0">Ngee Ann City</h3>
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+              <a class="nav-link fw-bold py-1 px-0" aria-current="page" href="index.html">Home</a>
+              <a class="nav-link fw-bold py-1 px-0" href="#">Free Play</a>
+              <a class="nav-link fw-bold py-1 px-0" href="#">Arcade</a>
+              <a class="nav-link fw-bold py-1 px-0" href="#">Leaderboard</a>
+              <a class="nav-link fw-bold py-1 px-0" href="#">About</a>
+              <a class="nav-link fw-bold py-1 px-0 active" href="#">Profile</a>
+            </nav>
+          </div>
+        </header>
     </div>
-    <div class="profile-details">
-        <div id="games-completed">
-
+    <div id="profile-wrapper">
+        <div class="profile-pic-name">
+            <img class="profile-pic mt-5" src="../images/account-icon.png" width="100" height="100">
+            <div class="profile-name-div">
+                <input type="text" id="profile-name" class="profile-name" value="Optimus Prime" onblur="onInputBlur()">
+                <i id="edit-icon" class="fa-solid fa-pen" onclick="focusInput()"></i>
+            </div>
+            <button class="save-button mt-3">Save</button>
         </div>
-        <div class="game-high-scores">
-            
+        <div class="profile-details mt-5">
+            <div id="games-completed" class="stats-container">
+                <p class="stats-title">Games Completed</p>
+                <div class="stats me-5">
+                    <p id="arcade-game-completed" class="stats-detail">12</p>
+                    <p class="stats-innertitle">Arcade</p>
+                </div>
+                <div class="stats">
+                    <p id="freeplay-game-completed" class="stats-detail">30</p>
+                    <p class="stats-innertitle">Freeplay</p>
+                </div>
+            </div>
+            <div id="game-high-scores" class="stats-container">
+                <p class="stats-title">Your High Scores</p>
+                <div class="stats me-5">
+                    <p id="arcade-high-scores" class="stats-detail">800</p>
+                    <p class="stats-innertitle">Arcade</p>
+                </div>
+                <div class="stats">
+                    <p id="freeplay-high-scores" class="stats-detail">900</p>
+                    <p class="stats-innertitle">Freeplay</p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <button id="logout-button">Log Out</button>
         </div>
     </div>
+    <script src="../bootstrap assets/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/229dff7a33.js" crossorigin="anonymous"></script>
+    <script src="../js/profile.js"></script>
 </body>
 </html>

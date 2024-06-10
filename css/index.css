@@ -4,6 +4,19 @@
   /* CUSTOMIZE THE CAROUSEL
   -------------------------------------------------- */
   
+body{
+  background-color: #262928;
+}
+
+body > *:not(#navbar) {
+    opacity: 0; /* Set initial opacity to 0 for all direct children of body except #navbar */
+    transition: opacity 0.5s ease-in; /* Apply opacity transition */
+}
+
+body.loaded > *:not(#navbar) {
+  opacity: 1; /* Set opacity to 1 for all elements except #navbar when body has the loaded class */
+}
+
 #background-video{
     position: absolute;
     right: 0;
@@ -117,70 +130,24 @@
 /*
 * Base structure
 */
-
-.cover-container {
-max-width: 80em;
-}
-
-
-/*
-* Header
-*/
-
-#navbar{
-    position: relative;
-    z-index: 999;
-    background-color: rgba(0, 0, 0, 0.0) !important;
-}
-
-#nav-name{
-    color: white;
-}
-
-.nav-masthead .nav-link {
-color: rgba(255, 255, 255, .5);
-border-bottom: .25rem solid transparent;
-}
-
-.nav-masthead .nav-link:hover,
-.nav-masthead .nav-link:focus {
-border-bottom-color: rgba(255, 255, 255, .25);
-}
-
-.nav-masthead .nav-link + .nav-link {
-margin-left: 1rem;
-}
-
-.nav-masthead .active {
-color: #fff;
-border-bottom-color: #fff;
-}
-
-@media (max-width: 767px){
-    .float-md-start{
-        text-align: center;
-        margin-bottom: 10px !important;
-    }
-}
-  
 .btn{
-    background-color: #FFBF85;
-    color: #262928;
-    font-weight: 700;
-    border: none;
-    border: 2px solid #FFBF85;
+  background-color: #FFBF85;
+  color: #262928;
+  font-weight: 700;
+  border: none;
+  border: 2px solid #FFBF85;
 }
 
 .btn:hover{
-    border: 2px solid #FFBF85;
-    background-color: transparent;
-    color: white;
-    font-weight: 700;
+  border: 2px solid #FFBF85;
+  background-color: transparent;
+  color: white;
+  font-weight: 700;
 }
 
-#main-menu-caption{
-  top: 46% !important;
-}
+/*
+Main Menu Styling
+*/
 
 #main-menu-title{
   width: 100%;
@@ -202,4 +169,19 @@ border-bottom-color: #fff;
   border-inline-start: 2px solid #FFBF85;
   border-inline-end: 2px solid #FFBF85;
   background-color: rgba(255, 191, 133, .5);
+}
+
+@media (max-width: 500px) {
+  .main-menu-btn {
+    max-width: 70%; /* Full width on smaller screens */
+  }
+
+  #main-menu-title{
+    width: 80%;
+    margin-bottom: 1rem;
+  }
+  
+  .main-menu-btn{
+    font-size: 1rem;
+  }
 }
