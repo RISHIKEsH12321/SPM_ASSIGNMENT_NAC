@@ -28,32 +28,34 @@
     <div id="profile-wrapper">
         <div class="profile-pic-name">
             <img class="profile-pic mt-5" src="../images/account-icon.png" width="100" height="100">
-            <div class="profile-name-div">
-                <input type="text" id="profile-name" class="profile-name" value="Optimus Prime" onblur="onInputBlur()">
-                <i id="edit-icon" class="fa-solid fa-pen" onclick="focusInput()"></i>
+            <div class="profile-name-wrapper">
+                <div class="profile-name-div">
+                    <input type="text" id="profile-name" class="profile-name" onblur="onInputBlur()">
+                    <i id="edit-icon" class="fa-solid fa-pen" onclick="focusInput()"></i>
+                </div>
             </div>
-            <button class="save-button mt-3">Save</button>
+            <button id="save-name-btn" class="save-button mt-3">Save</button>
         </div>
         <div class="profile-details mt-5">
             <div id="games-completed" class="stats-container">
                 <p class="stats-title">Games Completed</p>
                 <div class="stats me-5">
-                    <p id="arcade-game-completed" class="stats-detail">12</p>
+                    <p id="arcade-game-completed" class="stats-detail">0</p>
                     <p class="stats-innertitle">Arcade</p>
                 </div>
                 <div class="stats">
-                    <p id="freeplay-game-completed" class="stats-detail">30</p>
+                    <p id="freeplay-game-completed" class="stats-detail">0</p>
                     <p class="stats-innertitle">Freeplay</p>
                 </div>
             </div>
             <div id="game-high-scores" class="stats-container">
                 <p class="stats-title">Your High Scores</p>
                 <div class="stats me-5">
-                    <p id="arcade-high-scores" class="stats-detail">800</p>
+                    <p id="arcade-high-scores" class="stats-detail">0</p>
                     <p class="stats-innertitle">Arcade</p>
                 </div>
                 <div class="stats">
-                    <p id="freeplay-high-scores" class="stats-detail">900</p>
+                    <p id="freeplay-high-scores" class="stats-detail">0</p>
                     <p class="stats-innertitle">Freeplay</p>
                 </div>
             </div>

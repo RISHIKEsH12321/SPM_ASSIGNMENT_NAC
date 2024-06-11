@@ -22,32 +22,44 @@ body{
     margin: 0 auto;
 }
 
-.profile-name-div{
+.profile-name-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.profile-name-div {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    width: 100%;
+    max-width: 500px; /* Adjust max-width as needed */
 }
 
-.profile-name{
+.profile-name {
     text-align: center;
-    padding: 0 !important;
     color: white;
-    font-size:2.5rem;
+    font-size: 2.5rem;
     padding: 1rem;
     background-color: transparent;
     border: none;
     font-weight: bold;
+    width: 100%;
+}
+
+#edit-icon {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    color: white;
+    padding: 1rem;
+    font-size: 1.5rem; /* Adjust icon size as needed */
 }
 
 .profile-name:focus{
     outline: none;
     border-bottom: 1px solid #FFBF85; 
-}
-
-#edit-icon{
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
 }
 
 .save-button {
