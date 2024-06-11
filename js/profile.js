@@ -48,9 +48,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (storedUser) {
         const user = JSON.parse(storedUser);
-        const userId = user._id; // Assuming the user object contains an email field
-
-        // Fetch user data from API based on email
+        const userId = user._id; // Assuming the user object contains an _id field
+    
+        // Fetch user data from API based on userId
         fetch(`https://spmassignment-a329.restdb.io/rest/player/${userId}`, {
             method: 'GET',
             headers: {
@@ -61,11 +61,10 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.length > 0) {
-                console.log("fetched user data");
-                const fetchedUser = data[0]; // Assuming the API returns an array of users and you need the first one
+            if (data) {
+                console.log("Fetched user data:", data);
                 // Update UI with fetched user data
-                updateUserUI(fetchedUser);
+                updateUserUI(data);
             } else {
                 console.log('User not found');
             }
@@ -76,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.log('No user data found in sessionStorage.');
     }
-});
+});    
 
 // Add 'loaded' class to profile-wrapper after page loads
 window.addEventListener('load', function() {
