@@ -48,10 +48,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (storedUser) {
         const user = JSON.parse(storedUser);
-        const email = user.email; // Assuming the user object contains an email field
+        const userId = user._id; // Assuming the user object contains an email field
 
         // Fetch user data from API based on email
-        fetch(`https://spmassignment-a329.restdb.io/rest/player?q={"email":"${email}"}`, {
+        fetch(`https://spmassignment-a329.restdb.io/rest/player/${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -118,6 +118,12 @@ document.addEventListener("click", function(event) {
 const saveBtn = document.getElementById("save-name-btn");
 saveBtn.addEventListener('click', function () {
     const changedUsername = nameInput.value;
+
+    if (changedUsername.length === 0){
+        alert("Username cannot be empty. Please fill it in")
+        nameInput.focus();
+        return;
+    }
     
     // Retrieve the current user from sessionStorage
     const storedUser = sessionStorage.getItem('User');
