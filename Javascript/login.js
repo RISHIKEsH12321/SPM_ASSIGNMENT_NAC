@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('form').addEventListener('submit', function(event) {
+    const loginForm = document.getElementById('loginForm');
+    const successModal = document.getElementById('successModal');
+    const errorModal = document.getElementById('errorModal');
+
+    loginForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
         // Get form values
@@ -21,16 +25,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 const user = users[0];
 
                 if (user.password === password) {
+                    console.log("login successful")
+                    sessionStorage.setItem('currentUser', JSON.stringify(user));
 
-                    sessionStorage.setItem('User', JSON.stringify(user));
-                    alert('Login Successful!');
-                    
-                    // window.location.href='register.html'
+                    successModal.style.display = 'block';
+
+                    const closeButton = successModal.querySelector('.close');
+                    closeButton.addEventListener('click', function() {
+                        successModal.style.display = 'none';
+                    });
+
+                    // setTimeout(function() {
+                    //     window.location.href = 'dashboard.html';
+                    // }, 2000);
+
                 } else {
-                    alert('Invalid password');
+                    errorModal.style.display = 'block';
+
+                    const errorCloseButton = errorModal.querySelector('.close');
+                    errorCloseButton.addEventListener('click', function() {
+                        errorModal.style.display = 'none';
+                    });
                 }
             } else {
-                alert('User not found');
+                errorModal.style.display = 'block';
+
+                const errorCloseButton = errorModal.querySelector('.close');
+                errorCloseButton.addEventListener('click', function() {
+                    errorModal.style.display = 'none';
+                });
             }
         })
         .catch((error) => {
