@@ -22,7 +22,9 @@
                     </div>
                     <div class="textbox">
                         <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" placeholder="Enter Password">
+                        <input type="password" id="password" name="password" placeholder="Enter Password" oninput="updatePasswordStrength()">
+                        <meter max="4" id="password-strength-meter"></meter>
+                        <p id="password-strength-text"></p>
                     </div>
                     <button type="submit" class="btn">Sign Up</button>
                 </form>

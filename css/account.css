@@ -147,6 +147,21 @@ body {
     background-color: #ddd;
     color: #333;
 }
+.textbox meter {
+    display: block;
+    width:200px;
+    margin-left:60px
+}
+
+#password-strength-text{
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+#password-strength-meter,
+#password-strength-text {
+    display: none;
+}
 
 .btn {
     width: 100%;
@@ -157,7 +172,7 @@ body {
     color: #fff;
     font-size: 16px;
     cursor: pointer;
-    margin-top:20px;
+    margin-top:10px;
 }
 
 .btn:hover {
@@ -221,4 +236,43 @@ dotlottie-player {
     margin: 0 auto;
     display: block;
     margin-top: 20px;
+}
+
+
+@media (max-width: 500px){
+    .register-container {
+        width: 90%;
+    }
+    
+    .textbox label {
+        margin-left:5px;
+    }
+    
+    .textbox input {
+        width:250px;
+    }
+
+    .textbox meter {
+        width:150px;
+        margin-top:5px;
+        margin-left:60px
+    }
+
+    .image-container {
+        display:none;
+    }
+
+    .login-container h2 {
+        font-size:30px;
+    }
+    
+    .login-container input {
+        width: 80%;
+        height:10px;
+    }
+    
+    .login-container label {
+        width:88%;
+    }
+
 }
