@@ -20,10 +20,11 @@ body {
 
 .GameType {
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 30px;
     border: none;
     background-color: #444;
     color: #fff;
+    font-weight: 550;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -31,6 +32,7 @@ body {
 
 .GameType.active {
     background-color: #fa8231;
+    color: #000;
 }
 
 
@@ -62,6 +64,7 @@ body {
     /* background-color: #444; */
     font-weight: bold;
     text-align: center;
+    font-size: 25px;
     padding: 10px 0;
 }
 
@@ -69,6 +72,7 @@ body {
     background-color: #666;
     text-align: center;
     padding: 10px 0;
+    font-size: 20px;
 }
 
 .rank {
@@ -79,9 +83,11 @@ body {
 .player-name {
     text-align: center;
     /* padding-left: 5%; */
+    color: #fff;
 }
 
 .score {
     text-align: center;
     padding-right: 10px;
+    color: #fff;
 }
