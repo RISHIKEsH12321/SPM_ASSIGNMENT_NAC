@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/about.css">
+</head>
+<body>
+    <h1><u>Game Info</u></h1>
+    <div style="background-color: #FFBF85;" class="lato-regular">
+        <p style="text-align: center;">
+            Ngee Ann City is a city-building strategy game. 
+            The player is the mayor and the goal is to score as many points as possible
+        </p>
+    </div>
+    <h1><u>How to play</u></h1>
+    <div>
+
+    </div>
+    <div style="background-color: #FFBF85;" class="lato-regular">
+        <h2><u>Arcade Mode</u></h2>
+        <p>
+            Begin with 16 coins in a 20x20 city. 
+            Every turn, the player will select one of two randomly selected buildings, costing 1 coin. 
+            The first building can be placed anywhere in the city, and subsequent buildings have to be placed adjacent to another building.
+        </p>
+        <h2><u>Arcade Point System</u></h2>
+        <ul>
+            <li>
+                Residential (R): If it is next to an industry (I), 
+                then it scores 1 point only. Otherwise, it scores 1 point for each adjacent residential (R) or commercial (C), 
+                and 2 points for each adjacent park (O).
+            </li>
+            <li>
+                Industry (I): Scores 1 point per industry in the city. Each industry generates 1 coin per residential building adjacent to it.
+            </li>
+            <li>
+                Commercial (C): Scores 1 point per commercial adjacent to it. Each commercial generates 1 coin per residential adjacent to it.
+            </li>
+            <li>
+                Park (O): Scores 1 point per park adjacent to it.
+            </li>
+            <li>
+                Road (*): Scores 1 point per connected road (*) in the same row
+            </li>
+        </ul>
+    </div>
+    <br>
+    <div style="background-color: #FFBF85;" class="lato-regular">
+        <h2><u>Free Play Mode</u></h2>
+        <p>
+            Begin with unlimited coins and a 5x5 city. 
+            In each turn, the player can construct any of the buildings in the city, on any cell in the city. 
+            Once a building is constructed along the border of the city, additional 5 more rows of cells are 
+            added to the perimeter of the city, i.e. the city will expand to 15x15 on the first time, 
+            and 25x25 on the second expansion. Max expansion is 100x100.
+        </p>
+        <h2><u>Free Play Point System</u></h2>
+        <ul>
+            <li>
+                Residential (R): Each residential building generates 1 coin per turn. 
+                Each cluster of residential buildings (must be immediately next to each other) 
+                requires 1 coin per turn to upkeep.
+            </li>
+            <li>
+                Industry (I): Each industry generates 2 coins per turn and cost 1 coin per turn to upkeep.
+            </li>
+            <li>
+                Commercial (C): Each commercial generates 3 coins per turn and cost 2 coins per turn to upkeep.
+            </li>
+            <li>
+                Park (O): Each park costs 1 coin to upkeep.
+            </li>
+            <li>
+                Road (*): Each unconnected road segment costs 1 coin to upkeep
+            </li>
+        </ul>
+    </div>
+
+    <h1><u>Building Types</u></h1>
+    <div style="background-color: #FFBF85;" class="lato-regular" id="building">
+        <div class="imgLayout">
+            <img src="images/Road.png" alt="road">
+            <p>Road</p>
+        </div>
+        <div class="imgLayout">
+            <img src="images/Industrial.png" alt="road">
+            <p>Industry</p>
+        </div>
+        <div class="imgLayout">
+            <img src="images/Commercial.png" alt="road">
+            <p>Commercial</p>
+        </div>
+        <div class="imgLayout">
+            <img src="images/Park.png" alt="road">
+            <p>Park</p>
+        </div>
+        <div class="imgLayout">
+            <img src="images/Residential.png" alt="road">
+            <p>Residential</p>
+        </div>
+        
+    </div>
+</body>
+</html>
