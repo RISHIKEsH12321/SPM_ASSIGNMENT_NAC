@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         successModal.style.display = 'none';
                     });
 
-                    // setTimeout(function() {
-                    //     window.location.href = 'dashboard.html';
-                    // }, 2000);
+                    setTimeout(function() {
+                        window.location.href = '../index.html';
+                    }, 2000);
 
                 } else {
                     errorModal.style.display = 'block';
