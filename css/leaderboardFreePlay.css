@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #2a2a2a;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.GameTypeContainer {
+    background-color: #707070;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    width: 60%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    border-radius: 10px;
+}
+
+.GameType {
+    padding: 10px 20px;
+    font-size: 30px;
+    border: none;
+    background-color: #444;
+    color: #fff;
+    font-weight: 550;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.GameType.active {
+    background-color: #fa8231;
+    color: #000;
+}
+
+
+.leaderboard {
+    width: 80%;
+}
+
+#headerContainer {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    background-color: #444;
+    margin-bottom: 10px;
+    color: #fff;
+    border-radius: 10px;
+
+}
+
+.rank-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    background-color: #444;
+    border: 2px solid #FFBF85;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.header {
+    /* background-color: #444; */
+    font-weight: bold;
+    text-align: center;
+    font-size: 25px;
+    padding: 10px 0;
+}
+
+.rank, .player-name, .score {
+    background-color: #666;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 20px;
+}
+
+.rank {
+    color: #FFA31A;
+    font-weight: bold;
+}
+
+.player-name {
+    text-align: center;
+    /* padding-left: 5%; */
+    color: #fff;
+}
+
+.score {
+    text-align: center;
+    padding-right: 10px;
+    color: #fff;
+}

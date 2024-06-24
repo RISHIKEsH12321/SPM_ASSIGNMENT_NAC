@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="../css/leaderboardFreePlay.css">
+</head>
+<body>
+    
+    <div class="GameTypeContainer">
+        <button type="button" class="GameType active" id="ArcadeGameType" onclick="toggleButton('ArcadeGameType')">Arcade</button>
+        <button type="button" class="GameType" id="FreePlayGameType" onclick="toggleButton('FreePlayGameType')">Free Play</button>
+    </div>
+
+    <div class="leaderboard">
+        <div id="headerContainer">
+            <div class="header">Rank</div>
+            <div class="header">Player Name</div>
+            <div class="header">Score</div>
+        </div>
+        
+        <div id="rankList"></div>
+    </div>
+
+
+
+
+
+    <script src="../js/leaderboardFreePlay.js"></script>
+</body>
+</html>
