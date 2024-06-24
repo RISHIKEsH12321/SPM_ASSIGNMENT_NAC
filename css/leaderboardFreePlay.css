@@ -6,6 +6,9 @@ body {
     align-items: center;
     flex-direction: column;
 }
+.cover-container{
+    width: 100%;
+}
 
 .GameTypeContainer {
     background-color: #707070;

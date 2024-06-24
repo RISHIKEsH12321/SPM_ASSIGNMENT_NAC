@@ -3,11 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link href="../bootstrap assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/navbar.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/leaderboardFreePlay.css">
+    <title>Leaderboard</title>
+
 </head>
 <body>
-    
+    <div id="navbar" class="cover-container d-flex w-200 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+          <div>
+            <h3 id="nav-name" class="float-md-start mb-0">Ngee Ann City</h3>
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+              <a class="nav-link fw-bold py-1 px-0"  href="../index.html">Home</a>
+              <a class="nav-link fw-bold py-1 px-0" href="./freeplay.html">Free Play</a>
+              <a class="nav-link fw-bold py-1 px-0" href="#">Arcade</a>
+              <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="./leaderboardFreePlay.html">Leaderboard</a>
+              <a class="nav-link fw-bold py-1 px-0" href="./about.html">About</a>
+              <a class="nav-link fw-bold py-1 px-0" href="./profile.html">Profile</a>
+            </nav>
+          </div>
+        </header>
+    </div>
+
     <div class="GameTypeContainer">
         <button type="button" class="GameType active" id="ArcadeGameType" onclick="toggleButton('ArcadeGameType')">Arcade</button>
         <button type="button" class="GameType" id="FreePlayGameType" onclick="toggleButton('FreePlayGameType')">Free Play</button>
@@ -22,11 +42,8 @@
         
         <div id="rankList"></div>
     </div>
-
-
-
-
-
+    <script src="../bootstrap assets/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/229dff7a33.js" crossorigin="anonymous"></script>
     <script src="../js/leaderboardFreePlay.js"></script>
 </body>
 </html>

@@ -7,9 +7,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/about.css">
+    <link href="../bootstrap assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/navbar.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/about.css">
 </head>
 <body>
+    <div id="navbar" class="cover-container d-flex w-200 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+          <div>
+            <h3 id="nav-name" class="float-md-start mb-0">Ngee Ann City</h3>
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+              <a class="nav-link fw-bold py-1 px-0" href="../index.html">Home</a>
+              <a class="nav-link fw-bold py-1 px-0" href="./freeplay.html">Free Play</a>
+              <a class="nav-link fw-bold py-1 px-0" href="#">Arcade</a>
+              <a class="nav-link fw-bold py-1 px-0" href="./leaderboardFreePlay.html">Leaderboard</a>
+              <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="./about.html">About</a>
+              <a class="nav-link fw-bold py-1 px-0" href="./profile.html">Profile</a>
+            </nav>
+          </div>
+        </header>
+    </div>
+
     <h1><u>Game Info</u></h1>
     <div style="background-color: #FFBF85;" class="lato-regular">
         <p style="text-align: center;">
@@ -84,26 +102,27 @@
     <h1><u>Building Types</u></h1>
     <div style="background-color: #FFBF85;" class="lato-regular" id="building">
         <div class="imgLayout">
-            <img src="images/Road.png" alt="road">
+            <img src="../images/Road.png" alt="road">
             <p>Road</p>
         </div>
         <div class="imgLayout">
-            <img src="images/Industrial.png" alt="road">
+            <img src="../images/Industrial.png" alt="road">
             <p>Industry</p>
         </div>
         <div class="imgLayout">
-            <img src="images/Commercial.png" alt="road">
+            <img src="../images/Commercial.png" alt="road">
             <p>Commercial</p>
         </div>
         <div class="imgLayout">
-            <img src="images/Park.png" alt="road">
+            <img src="../images/Park.png" alt="road">
             <p>Park</p>
         </div>
         <div class="imgLayout">
-            <img src="images/Residential.png" alt="road">
+            <img src="../images/Residential.png" alt="road">
             <p>Residential</p>
         </div>
         
     </div>
+    
 </body>
 </html>
