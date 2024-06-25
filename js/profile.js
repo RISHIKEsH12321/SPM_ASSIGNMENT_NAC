@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (storedUser) {
         const user = JSON.parse(storedUser);
         // const userId = user._id; // Assuming the user object contains an _id field
+        console.log(JSON.parse(sessionStorage.getItem('currentUser')).name);
         updateUserUI(user);
     } else {
         console.log('No user data found in sessionStorage.');
@@ -131,7 +132,7 @@ saveBtn.addEventListener('click', function () {
         .then(response => response.json())
         .then(updatedUser => {
             // Update the sessionStorage with the new user data
-            sessionStorage.setItem('User', JSON.stringify(updatedUser));
+            sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
             
             // Optionally, update the UI or notify the user that the update was successful
             alert('Username updated successfully!');
