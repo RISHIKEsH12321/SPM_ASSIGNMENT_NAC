@@ -1,3 +1,13 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const storedUser = sessionStorage.getItem('currentUser');
+
+    if (!storedUser) {
+        console.log('No user data found in sessionStorage.');
+        alert("Please Login/Register an account first.")
+        window.location.href="./html/login.html";
+    }
+});
+
 window.addEventListener('load', function() {
     document.body.classList.add('loaded');
 });
