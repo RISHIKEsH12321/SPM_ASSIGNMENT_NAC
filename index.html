@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/carousel/">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/cover/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link href="./bootstrap assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/navbar.css" rel="stylesheet">
+    <link href="./css/index.css" rel="stylesheet">
+    <title>NgeeAnn City Game</title>
+</head>
+<body>
+    <div id="navbar" class="cover-container d-flex w-200 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+          <div>
+            <h3 id="nav-name" class="float-md-start mb-0">Ngee Ann City</h3>
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+              <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="./index.html">Home</a>
+              <a class="nav-link fw-bold py-1 px-0" href="./html/freeplay.html">Free Play</a>
+              <a class="nav-link fw-bold py-1 px-0" href="#">Arcade</a>
+              <a class="nav-link fw-bold py-1 px-0" href="./html/leaderboardFreePlay.html">Leaderboard</a>
+              <a class="nav-link fw-bold py-1 px-0" href="./html/about.html">About</a>
+              <a class="nav-link fw-bold py-1 px-0" href="./html/profile.html">Profile</a> 
+            </nav>
+          </div>
+        </header>
+    </div>
+
+    <video id="background-video" autoplay loop muted plays-inline>
+        <source src="./images/Background.mp4" type="video/mp4">
+    </video>
+
+    <div id="myCarousel" class="carousel slide mb-6">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="var(--bs-secondary-color)"/></svg>
+          <div class="container">
+            <div class="carousel-caption" id="main-menu-caption">
+              <img alt="Main Menu Title" id="main-menu-title" src="./images/NgeeAnnCityWhiteLogo.png">
+              <p><a class="btn btn-lg btn-primary main-menu-btn" href="./html/freeplay.html">Free Play</a></p>
+              <p><a class="btn btn-lg btn-primary main-menu-btn" href="./html/freeplay.html">Arcade</a></p>
+              <p><a class="btn btn-lg btn-primary main-menu-btn" href="./html/leaderboardFreePlay.html">Leaderboard</a></p>
+              <p><a class="btn btn-lg btn-primary main-menu-btn" href="./html/about.html">How to Play</a></p>
+              <p><a id="profile-link" class="btn btn-lg btn-primary main-menu-btn" href="./html/profile.html">Profile</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="var(--bs-secondary-color)"/></svg>
+          <div class="container">
+            <div class="carousel-caption text-start">
+              <h1>How the Game Works?</h1>
+              <p class="opacity-75">Build your dream city from scratch! Plan your layout, manage resources, and grow your money. Strategize to keep your citizens happy and watch your city thrive.</p>
+              <p><a class="btn btn-lg btn-primary" href="#">Learn More</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="var(--bs-secondary-color)"/></svg>
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>Free Play Mode</h1>
+              <p>Explore and expand your city at your own pace. No restrictions, no time limits—just endless fun and creativity.</p>
+              <p><a class="btn btn-lg btn-primary" href="#">Play Now <i class="fa-solid fa-play" style="margin-left: 5px;"></i></a></p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="var(--bs-secondary-color)"/></svg>
+          <div class="container">
+            <div class="carousel-caption text-end">
+              <h1>Arcade Mode</h1>
+              <p>Test your city-building skills with exciting challenges and time-limited missions. Compete for high scores and unlock special rewards!</p>
+              <p><a class="btn btn-lg btn-primary" href="#">Play Now <i class="fa-solid fa-gamepad" style="margin-left: 5px;"></i></a></p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="var(--bs-secondary-color)"/></svg>
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>Check the Leaderboard!</h1>
+              <p>See how your city ranks among others. Check out the leaderboard to compare your progress and compete for the top spot!</p>
+              <p><a class="btn btn-lg btn-primary" href="#">Check Now <i class="fa-solid fa-clipboard-list" style="margin-left: 5px;"></i></a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+    <script src="./bootstrap assets/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/index.js"></script>
+    <script src="https://kit.fontawesome.com/229dff7a33.js" crossorigin="anonymous"></script>
+</body>
+</html>

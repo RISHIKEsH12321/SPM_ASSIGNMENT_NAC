@@ -1,0 +1,191 @@
+body{
+    background-color: #262928;
+}
+
+label{
+    display: none;
+}
+
+#profile-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    min-height: 80vh; /* Set the height to 100% of the viewport height */
+    padding-bottom: 75px;
+    opacity: 0; /* Initially hide the profile content */
+    transition: opacity 1s ease-in-out; /* Apply transition effect */
+}
+
+#profile-wrapper.loaded {
+    opacity: 1;
+}
+
+.profile-pic{
+    display: block;
+    margin: 0 auto;
+}
+
+.profile-name-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.profile-name-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    max-width: 500px; /* Adjust max-width as needed */
+}
+
+.profile-name {
+    text-align: center;
+    color: white;
+    font-size: 2.5rem;
+    padding: 1rem;
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+    width: 100%;
+}
+
+#edit-icon {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    color: white;
+    padding: 1rem;
+    font-size: 1.5rem; /* Adjust icon size as needed */
+}
+
+.profile-name:focus{
+    outline: none;
+    border-bottom: 1px solid #FFBF85; 
+}
+
+.save-button {
+    display: block;
+    margin: 0 auto;
+    background-image: linear-gradient(to right, #ffd3a5 0%, #ffbf85 100%); /* Adjusted background colors */
+    color: #fff;
+    border: none;
+    padding: 0.5rem 2rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    animation: glow 2s infinite linear;
+    box-shadow: 0px 0px 10px 3px rgba(255, 191, 133, 0.6); /* Adjusted box shadow color */
+}
+@keyframes glow {
+    0%, 100% {
+        background-position: 0% 50%;
+        box-shadow: 0px 0px 10px 3px rgba(255, 191, 133, 0.6); /* Adjusted box shadow color */
+    }
+    50% {
+        background-position: 100% 50%;
+        box-shadow: 0px 0px 15px 5px rgba(255, 191, 133, 0.8); /* Adjusted box shadow color and intensity */
+    }
+}
+
+.save-button:hover {
+    background-image: linear-gradient(to right, #ffbf85 0%, #ffd3a5 100%); /* Reverse the gradient colors on hover */
+    box-shadow: 0px 0px 15px 5px rgba(255, 191, 133, 0.8); /* Adjusted box shadow color and intensity on hover */
+    filter: grayscale(40%); /* Apply a grey filter effect on hover */
+}
+
+.profile-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.stats-container {
+    color: white;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Center text within the container */
+}
+
+.stats-title {
+    width: 100%;
+    font-size: 2rem;
+    color: #FFBF85;
+}
+
+.stats {
+    display: flex;
+    flex-direction: column;
+    margin: 0 10px; 
+}
+
+.stats-detail {
+    margin: 0;
+    font-size: 3rem;
+}
+
+.stats-innertitle {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: bold;
+}
+
+#games-completed {
+    border-right: 0.5px solid white;
+}
+
+#game-high-scores {
+    border-left: 0.5px solid white;
+}
+
+@media (max-width: 760px) {
+    .profile-name {
+        font-size: 1.5rem;
+    }
+
+    .profile-details {
+        grid-template-columns: 1fr;
+    }
+
+    #games-completed {
+        margin-bottom: 3rem;
+    }
+
+    #games-completed {
+        border-right: none;
+    }
+    
+    #game-high-scores {
+        border-left: none;
+    }
+
+    .stats-title{
+        margin-bottom: 1;
+    }
+
+    .stats-title,
+    .stats-innertitle, .stats-detail {
+        font-size: 1.8rem; /* Reduce font size for smaller screens */
+    }
+}
+
+#logout-button {
+    padding: 0.5rem 5rem;
+    background-color: red; /* Orange color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 2rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#logout-button:hover {
+    background-color: #9a0000; /* Darker orange color on hover */
+}

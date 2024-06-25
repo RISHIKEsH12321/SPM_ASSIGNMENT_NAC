@@ -1,0 +1,278 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #2a2a2a;
+}
+
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    width: 70%;
+    height: 70%;
+    background-color: #ffffff;
+}
+
+.image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+}
+
+.image-container img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.login-container {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-container h2 {
+    color: #ffa07a;
+    text-align: center;
+    font-size:40px;
+    font-weight:400;
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.login-container input {
+    width: 70%; /* Adjust this value as needed */
+}
+
+
+.login-container label {
+    margin-top: 20px;
+    color: #2a2a2a;
+    width:74%;
+}
+
+.login-container input {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-container button {
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #ffa07a;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    width: 70%; /* Adjust this value as needed */
+}
+
+.login-container button:hover {
+    background-color: #ff8c00;
+}
+
+.login-container p {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.login-container a {
+    color: #1e90ff;
+    text-decoration: none;
+}
+
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #2a2a2a;
+}
+
+.register-container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+.signup-box {
+    background-color: #444;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.signup-box h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size:30px;
+    color:white;
+}
+
+.textbox {
+    margin-bottom: 20px;
+}
+
+.textbox label {
+    display: block;
+    margin-bottom: 5px;
+    color:white;
+    margin-left:5px;
+}
+
+.textbox input {
+    width:300px;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    background-color: #ddd;
+    color: #333;
+}
+.textbox meter {
+    display: block;
+    width:200px;
+    margin-left:60px
+}
+
+#password-strength-text{
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+#password-strength-meter,
+#password-strength-text {
+    display: none;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffa500;
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top:10px;
+}
+
+.btn:hover {
+    background-color: #ff8c00;
+}
+
+.signup-box p {
+    text-align: center;
+    margin-top: 20px;
+    color:white;
+}
+
+.signup-box p a {
+    color: #ffa500;
+    text-decoration: none;
+}
+
+.signup-box p a:hover {
+    text-decoration: underline;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 100px auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+}
+
+.modal-content .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.modal-content .close:hover,
+.modal-content .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+dotlottie-player {
+    margin: 0 auto;
+    display: block;
+    margin-top: 20px;
+}
+
+
+@media (max-width: 500px){
+    .register-container {
+        width: 90%;
+    }
+    
+    .textbox label {
+        margin-left:5px;
+    }
+    
+    .textbox input {
+        width:250px;
+    }
+
+    .textbox meter {
+        width:150px;
+        margin-top:5px;
+        margin-left:60px
+    }
+
+    .image-container {
+        display:none;
+    }
+
+    .login-container h2 {
+        font-size:30px;
+    }
+    
+    .login-container input {
+        width: 80%;
+        height:10px;
+    }
+    
+    .login-container label {
+        width:88%;
+    }
+
+}

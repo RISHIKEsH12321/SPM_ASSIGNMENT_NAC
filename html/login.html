@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/account.css">
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="container">
+            <div class="image-container">
+                <img src="../images/login.png" alt="Cityscape">
+            </div>
+            <div class="login-container">
+                <h2>NGEE ANN CITY</h2>
+                <form id="loginForm">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    
+                    <button type="submit">Login</button>
+                    
+                    <p>Don't have an account? <a href="./register.html">Sign up here</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p style="font-weight: bold;">Login Successful!</p>
+            <dotlottie-player id="successLottie" src="https://lottie.host/e9f6e220-25b8-4c12-bd54-1ae51caec5ac/9ou0cj49Gm.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+        </div>
+    </div>
+
+    <div class="modal" id="errorModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p style="font-weight: bold;">Login Failed. Please check your credentials.</p>
+            <dotlottie-player id="failLottie" src="https://lottie.host/45f693fc-a607-477e-a633-f1c257b87c46/gEek1r14CH.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+    <script src="../js/login.js"></script>
+</body>
+</html>
