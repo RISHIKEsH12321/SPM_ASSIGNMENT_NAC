@@ -1,8 +1,23 @@
 // Initialize the Game
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize the game instance
-    const game = new ArcadeGame();
+    let game = new ArcadeGame();
     game.startNewGame();
+
+    const modal = document.getElementById("gameOverModal");
+    const restartBtn = modal.querySelector("#restartBtn");
+    const menuBtn = modal.querySelector("#menuBtn");
+
+    restartBtn.addEventListener("click", () =>{
+        game = new ArcadeGame();
+        game.startNewGame();
+        modal.style.display="none";
+    });
+
+    menuBtn.addEventListener("click", () =>{
+        modal.style.display="none";
+        window.location.href="../index.html"
+    })
 });
 
 class ArcadeGame {
@@ -134,6 +149,11 @@ class ArcadeGame {
         }
 
         cell.classList.remove('drag-over');
+
+        // Check if game over
+        if (this.coins <= 0) {
+            this.gameOver();
+        }
     }
 
     // Check if a cell is valid for placement based on adjacency to existing buildings
@@ -236,21 +256,9 @@ class ArcadeGame {
             this.coins--;
         });
     
-        this.grid.forEach(row => {
-            row.forEach(building => {
-                if (building === 'I' || building === 'C' || building === 'O' || building === '*') {
-                    this.coins--;
-                }
-            });
-        });
+        console.log(this.currentBuildings);
     
         this.coins--; // Deduct 1 coin for placing a building
-
-        // Check if game over
-        if (this.coins <= 0) {
-            this.gameOver();
-            alert("GameOver");
-        }
     }
 
     calculateResidentialPoints(row, col) {
@@ -387,32 +395,7 @@ class ArcadeGame {
         });
     
         // Display game over modal
-        const modal = document.createElement('div');
-        modal.classList.add('modal');
-        modal.innerHTML = `
-            <div class="modal-content">
-                <p>Game Over!</p>
-                <p>Coins depleted. You cannot continue.</p>
-                <div class="modal-buttons">
-                    <button onclick="restartGame()">Restart Game</button>
-                    <button onclick="returnToMenu()">Return to Menu</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    
-        // Function to restart game
-        window.restartGame = () => {
-            modal.remove();
-            this.restart();
-        };
-    
-        // Function to return to main menu
-        window.returnToMenu = () => {
-            modal.remove();
-            // Add code to return to main menu or perform desired action
-            // For example:
-            // window.location.href = 'main-menu.html';
-        };
+        const modal = document.getElementById("gameOverModal");
+        modal.style.display = "flex";
     }
 }

@@ -148,13 +148,13 @@
             <div class="icon"><img src="../images/Commercial.png" alt="Commercial"></div>
         </div>
     </div>
-    <div class="modal">
+    <div id="gameOverModal" class="modal">
         <div class="modal-content">
-            <p>Game Over!</p>
-            <p>Coins depleted. You cannot continue.</p>
+            <h2>Game Over!</h2>
+            <p>Coins depleted. You have lost.</p>
             <div class="modal-buttons">
-                <button onclick="restartGame()">Restart Game</button>
-                <button onclick="returnToMenu()">Return to Menu</button>
+                <button id="restartBtn">Restart Game</button>
+                <button id="menuBtn">Return to Menu</button>
             </div>
         </div>
     </div>
