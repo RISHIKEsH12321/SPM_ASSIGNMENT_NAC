@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 class ArcadeGame {
     constructor() {
         this.gridSize = 20;
-        this.coins = 16;
+        this.coins = 1;
         this.points = 0;
         this.turn = 0;
         this.buildings = ['R', 'I', 'C', 'O', '*'];
@@ -271,6 +271,7 @@ class ArcadeGame {
             { dx: 1, dy: -1 }, { dx: 1, dy: 0 }, { dx: 1, dy: 1 }
         ];
     
+        let hasIndustry = false;
         directions.forEach(dir => {
             const r = row + dir.dx;
             const c = col + dir.dy;
@@ -282,25 +283,25 @@ class ArcadeGame {
                 } else if (building === 'O') {
                     points += 2;
                 } else if (building === 'I') {
-                    points++;
+                    hasIndustry = true;
                 }
             }
         });
-    
-        return points;
+        //If there is an industry near, points will be default to 1.
+        return hasIndustry ? 1 : points;
     }
 
     calculateIndustryPoints(row, col) {
-        let points = 0;
+        let points = 1;
     
         // Count industries
-        for (let r = 0; r < this.gridSize; r++) {
-            for (let c = 0; c < this.gridSize; c++) {
-                if (this.grid[r][c] === 'I') {
-                    points++;
-                }
-            }
-        }
+        // for (let r = 0; r < this.gridSize; r++) {
+        //     for (let c = 0; c < this.gridSize; c++) {
+        //         if (this.grid[r][c] === 'I') {
+        //             points++;
+        //         }
+        //     }
+        // }
     
         // Generate coins based on adjacent residential buildings
         const directions = [
@@ -373,6 +374,7 @@ class ArcadeGame {
         let points = 0;
     
         // Count connected roads in the same row
+        // Might need to change
         for (let c = 0; c < this.gridSize; c++) {
             if (this.grid[row][c] === '*') {
                 points++;
