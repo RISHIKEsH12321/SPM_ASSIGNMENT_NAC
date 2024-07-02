@@ -65,6 +65,10 @@ body {
     border: 2px solid #333;
 }
 
+.gridImgInGrid{
+    width: 30px;
+    height: 30px;
+}
 .icon-bar {
     display: flex;
     gap: 10px;
