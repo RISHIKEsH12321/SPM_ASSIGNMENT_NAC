@@ -29,17 +29,8 @@ function getGrids(gridNo) {
 function displayRandomBuildings() {
     const iconBar = document.getElementById('icon-bar');
     iconBar.innerHTML = ''; // Clear previous icons
-    // const randomBuildings = getRandomBuildings(2);
-    const randomBuildings = [
-        {
-            "type": "Commercial",
-            "src": "../images/Commercial.png"
-        },
-        {
-            "type": "Residential",
-            "src": "../images/Residential.png"
-        }
-    ]
+    const randomBuildings = getRandomBuildings(2);
+
     randomBuildings.forEach(building => {
         const iconDiv = document.createElement('div');
         iconDiv.classList.add('icon');
