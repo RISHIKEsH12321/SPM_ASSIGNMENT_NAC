@@ -43,7 +43,8 @@ function displayRandomBuildings() {
     randomBuildings.forEach(building => {
         const iconDiv = document.createElement('div');
         iconDiv.classList.add('icon');
-        iconDiv.textContent = building.type;
+        const buildingType = document.createElement('p');
+        buildingType.textContent = building.type;
         const img = document.createElement('img');
         img.src = building.src;
         img.alt = building.type;
@@ -51,6 +52,7 @@ function displayRandomBuildings() {
         img.setAttribute('data-building', building.type);
         img.addEventListener('dragstart', drag);
         iconDiv.appendChild(img);
+        iconDiv.appendChild(buildingType);
         iconBar.appendChild(iconDiv);
     });
 }
