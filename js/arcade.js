@@ -18,7 +18,51 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display="none";
         window.location.href="../index.html"
     })
+
+    const saveBtn = document.getElementById("saveBtn");
+    saveBtn.addEventListener("click", () => saveGame(game));
+
+    const loadBtn = document.getElementById("loadBtn");
+    loadBtn.addEventListener("click", () => loadGame(game));
 });
+
+
+// Saving of game
+async function saveGame(game) {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const userid = currentUser._id
+    console.log(userid)
+
+    const gameState = {
+        gridSize: game.gridSize,
+        coins: game.coins,
+        points: game.points,
+        turn: game.turn,
+        grid: game.grid,
+        currentBuildings: game.currentBuildings,
+        selectedBuilding: game.selectedBuilding
+    };
+
+    fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-apikey': '6667013f85f7f679ab63cd2a',
+            'cache-control': 'no-cache'
+
+        },
+        body: JSON.stringify({ 'arcade-save': gameState }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to save game state');
+        }
+        console.log('Game state saved successfully');
+    })
+    .catch(error => {
+        console.error('Error saving game state:', error);
+    });
+}
 
 class ArcadeGame {
     constructor() {
