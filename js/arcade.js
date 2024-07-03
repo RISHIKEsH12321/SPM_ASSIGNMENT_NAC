@@ -64,6 +64,56 @@ async function saveGame(game) {
     });
 }
 
+
+// Loading of game
+async function loadGame(game) {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const userId = currentUser._id;
+
+    fetch(`https://spmassignment-a329.restdb.io/rest/player/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-apikey': '6667013f85f7f679ab63cd2a',
+            'cache-control': 'no-cache'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to load game state');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const gameState = data['arcade-save'];
+        console.log(gameState);
+
+        if (gameState) {
+            game.gridSize = gameState.gridSize;
+            game.coins = gameState.coins;
+            game.points = gameState.points;
+            game.turn = gameState.turn;
+            game.grid = gameState.grid;
+            game.currentBuildings = gameState.currentBuildings;
+            game.selectedBuilding = gameState.selectedBuilding;
+
+            // Render and update UI based on loaded game state
+            game.renderGrid();
+            game.renderCurrentBuildings();
+            game.addEventListeners();
+            game.updateHeaderInfo();
+
+            console.log('Game state loaded successfully');
+        } else {
+            console.log('No saved game state found');
+        }
+    })
+    .catch(error => {
+        console.error('Error loading game state:', error);
+    });
+}
+
+
 class ArcadeGame {
     constructor() {
         this.gridSize = 20;
