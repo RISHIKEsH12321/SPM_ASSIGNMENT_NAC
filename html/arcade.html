@@ -159,8 +159,26 @@
         </div>
     </div>
 
-    <button id="saveBtn">save</button>
-    <button id="loadBtn">load</button>
+    <div class="button-container">
+        <button id="saveBtn">Save</button>
+        <button id="loadBtn">Load</button>
+    </div>
+    
+    <div id="saveModal" class="savemodal">
+        <div class="savemodal-content">
+            <p>Do you want to save the current game?</p>
+            <button id="saveYesBtn">Yes</button>
+            <button id="saveNoBtn">No</button>
+        </div>
+    </div>
+
+    <div id="loadModal" class="loadmodal">
+        <div class="loadmodal-content">
+            <p>Do you want to load the saved game?</p>
+            <button id="loadYesBtn">Yes</button>
+            <button id="loadNoBtn">No</button>
+        </div>
+    </div>
 </body>
 <script src="../js/arcade.js"></script>
 </html>
