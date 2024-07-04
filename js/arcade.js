@@ -282,6 +282,15 @@ class ArcadeGame {
             cell.addEventListener('dragover', (event) => this.dragOver(event));
             cell.addEventListener('dragenter', (event) => this.dragEnter(event));
             cell.addEventListener('drop', (event) => this.drop(event));
+
+            cell.addEventListener('contextmenu', (event) => {
+                event.preventDefault(); // Prevent default context menu
+    
+                const row = parseInt(cell.dataset.row);
+                const col = parseInt(cell.dataset.col);
+    
+                this.demolishBuilding(row, col);
+            });
         });
     }
 
@@ -564,5 +573,17 @@ class ArcadeGame {
         // Display game over modal
         const modal = document.getElementById("gameOverModal");
         modal.style.display = "flex";
+    }
+
+    demolishBuilding(row, col) {
+        const confirmed = window.confirm("Are you sure you want to demolish this building?");
+        if (confirmed && this.grid[row][col] !== null) {
+            this.grid[row][col] = null; // Remove the building
+            this.coins--; // Deduct 1 coin for demolition
+            this.updateHeaderInfo();
+            this.renderGrid();
+            this.renderCurrentBuildings();
+            this.addEventListeners();
+        }
     }
 }
