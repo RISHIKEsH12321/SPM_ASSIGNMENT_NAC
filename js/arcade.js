@@ -188,13 +188,14 @@ async function loadGame(game) {
 class ArcadeGame {
     constructor() {
         this.gridSize = 20;
-        this.coins = 1;
+        this.coins = 16;
         this.points = 0;
         this.turn = 0;
         this.buildings = ['R', 'I', 'C', 'O', '*'];
         this.grid = this.createGrid();
         this.currentBuildings = [];
         this.selectedBuilding = null;
+        this.isModalOpen = false;
 
         this.initUI();
     }
@@ -576,14 +577,67 @@ class ArcadeGame {
     }
 
     demolishBuilding(row, col) {
-        const confirmed = window.confirm("Are you sure you want to demolish this building?");
-        if (confirmed && this.grid[row][col] !== null) {
+        if (this.turn === 1) {
+            alert("You cannot demolish buildings on turn 1.");
+            return;
+        }
+
+        if (this.isModalOpen) {
+            return; // If a modal is already open, do nothing
+        }
+
+        if (this.grid[row][col] !== null) { // Check if there's a building in the cell
+            this.isModalOpen = true;
+
+            const cell = document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
+            const modal = document.createElement('div');
+            modal.classList.add('demolishmodal');
+            
+            const modalContent = document.createElement('div');
+            modalContent.classList.add('demolishmodal-content');
+    
+            const confirmText = document.createElement('p');
+            confirmText.textContent = 'Are you sure you want to demolish this building?';
+    
+            const btnContainer = document.createElement('div');
+            btnContainer.classList.add('demolishmodal-btn-container');
+    
+            const yesBtn = document.createElement('button');
+            yesBtn.textContent = 'Yes';
+            yesBtn.addEventListener('click', () => {
+                this.confirmDemolish(row, col);
+                modal.remove();
+                this.isModalOpen = false;
+            });
+    
+            const noBtn = document.createElement('button');
+            noBtn.textContent = 'No';
+            noBtn.addEventListener('click', () => {
+                modal.remove();
+                this.isModalOpen = false;
+            });
+    
+            btnContainer.appendChild(yesBtn);
+            btnContainer.appendChild(noBtn);
+    
+            modalContent.appendChild(confirmText);
+            modalContent.appendChild(btnContainer);
+    
+            modal.appendChild(modalContent);
+            cell.appendChild(modal);
+        }
+    }
+
+    confirmDemolish(row, col) {
+        if (this.grid[row][col] !== null) {
             this.grid[row][col] = null; // Remove the building
             this.coins--; // Deduct 1 coin for demolition
+            this.turn++;
             this.updateHeaderInfo();
             this.renderGrid();
             this.renderCurrentBuildings();
             this.addEventListeners();
         }
     }
+
 }
