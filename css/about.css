@@ -1,19 +1,56 @@
 body{
-    background-color: black;
+    background-color: #2a2a2a;
+    padding-bottom: 20px;
 }
 
 h1{
     color: white;
     text-align: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
-div{
-    margin: 0px 20px 0px 20px;
-    padding: 1px 10px 10px 10px;
+
+h2{
+    font-weight: 580;
+}
+
+#gameIntro{
+    background-color: #FFBF85;
+    width: 55%;
+    margin-left: 22.5%;
+    margin-right: 22.5%;
+    text-align: center;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    font-weight: bold;
     border-radius: 20px;
+
 }
+
+#gameIntroContent{
+    text-align: center;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+#gameModeExplanation{
+    background-color: #FFBF85;
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    border-radius: 20px;
+    margin:0 10% 0 10%;
+}
+
+li{
+    font-weight: bold;
+}
+
 
 p{
     font-size: large;
+    font-weight: bold;
 }
 
 .lato-regular {
@@ -23,17 +60,41 @@ p{
 }
 
 .imgLayout{
-    border: solid black 4px;
-    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+    /* margin-bottom: 2%; */
+    margin-top: 2%;
     width: 20%;
-    margin-bottom: 10px;
+    height: auto;
+    align-self: center;
 }
 
-#building{
+.imgLayout img{
+    border: solid white 4px;
+    height: 180px;
+    width: auto;
+    padding: 1%;
+    background-color: white;
+    border-radius: 20px;
+}
+
+.imgLayout p{
+    font-size: large;
+    font-weight: bold;
+    margin-top: 2%;
+}
+
+#buildingContainer{
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
-    
+    align-items: center;
+    background-color: #FFBF85;
+    padding-left: 3%;
+    padding-right: 3%;
+    border-radius: 20px;
+    margin:0% 10% 0% 10%;
 }
 

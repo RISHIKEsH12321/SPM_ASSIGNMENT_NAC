@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Form</title>
+    <link rel="stylesheet" href="../css/account.css">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="register-container">
+            <div class="signup-box">
+                <h2>Sign Up Now</h2>
+                <form id="signup-form">
+                    <div class="textbox">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" placeholder="Enter Username">
+                    </div>
+                    <div class="textbox">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" placeholder="Enter Email">
+                    </div>
+                    <div class="textbox">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" placeholder="Enter Password" oninput="updatePasswordStrength()">
+                        <meter max="4" id="password-strength-meter"></meter>
+                        <p id="password-strength-text"></p>
+                    </div>
+                    <button type="submit" class="btn">Sign Up</button>
+                </form>
+                <p>Don’t have an account? <a href="./login.html">Login here</a></p>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="dynamic-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modal-message"></p>
+            <dotlottie-player id="cautionLottie" src="https://lottie.host/1759902b-7c81-41f7-9fbd-c78fcb96a98a/km3NOuCcpp.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+            <dotlottie-player id="successLottie" src="https://lottie.host/e9f6e220-25b8-4c12-bd54-1ae51caec5ac/9ou0cj49Gm.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+    <script src="../js/register.js"></script>
+</body>
+</html>
