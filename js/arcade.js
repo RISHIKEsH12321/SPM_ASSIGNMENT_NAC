@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById("gameOverModal");
     const restartBtn = modal.querySelector("#restartBtn");
     const menuBtn = modal.querySelector("#menuBtn");
+    const quitGame = document.querySelector("#quit-game");
+    const infoBtn = document.querySelector("#info-button");
+
+    infoBtn.addEventListener("click", ()=>{
+        window.open("/html/about.html", '_blank');
+    })
 
     restartBtn.addEventListener("click", () =>{
         game = new ArcadeGame();
@@ -188,12 +194,13 @@ async function loadGame(game) {
 class ArcadeGame {
     constructor() {
         this.gridSize = 20;
-        this.coins = 16;
+        this.coins = 1;
         this.points = 0;
         this.turn = 0;
         this.buildings = ['R', 'I', 'C', 'O', '*'];
         this.grid = this.createGrid();
         this.currentBuildings = [];
+        this.placedBuildings = [];
         this.selectedBuilding = null;
         this.isModalOpen = false;
 
@@ -312,6 +319,7 @@ class ArcadeGame {
             this.updateHeaderInfo();
             this.selectRandomBuildings();
             this.renderGrid();
+            this.placedBuildings.push(this.grid[row][col]);
             this.renderCurrentBuildings();
             this.addEventListeners();
         } else if (this.selectedBuilding && this.isValidPlacement(row, col)) {
@@ -321,6 +329,7 @@ class ArcadeGame {
             this.updateHeaderInfo();
             this.selectRandomBuildings();
             this.renderGrid();
+            this.placedBuildings.push(this.grid[row][col]);
             this.renderCurrentBuildings();
             this.addEventListeners();
         }
@@ -391,7 +400,16 @@ class ArcadeGame {
                     buildingImg.style.height="100%";
                     buildingImg.dataset.row = i;
                     buildingImg.dataset.col = j;
+
                     cell.appendChild(buildingImg);
+                    // Add onclick event listener to demolish the building on click
+                    cell.addEventListener('click', () => {
+                        if (cell.querySelector('.demolishmodal')){
+                            return
+                        } else{
+                            this.demolishBuilding(i, j);
+                        }
+                    });
                 }
                 gridContainer.appendChild(cell);
             }
@@ -530,59 +548,72 @@ class ArcadeGame {
     }
 
     demolishBuilding(row, col) {
-        if (this.turn === 1) {
-            alert("You cannot demolish buildings on turn 1.");
-            return;
+        console.log("DemolishBuilding Activated");
+        // Check if there's already a demolish modal
+        if (document.body.querySelector('.demolishmodal')) {
+            return; // If modal already exists, do nothing
         }
 
-        if (this.isModalOpen) {
-            return; // If a modal is already open, do nothing
-        }
+        // Create demolish modal
+        console.log("Creating Modal");
+        const demolishmodal = document.createElement('div');
+        demolishmodal.classList.add('demolishmodal');
 
-        if (this.grid[row][col] !== null) { // Check if there's a building in the cell
-            this.isModalOpen = true;
+        const modalContent = document.createElement('div');
+        modalContent.classList.add('demolishmodal-content');
 
-            const cell = document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col}"]`);
-            const modal = document.createElement('div');
-            modal.classList.add('demolishmodal');
-            
-            const modalContent = document.createElement('div');
-            modalContent.classList.add('demolishmodal-content');
+        const confirmText = document.createElement('p');
+        confirmText.textContent = 'Are you sure you want to demolish this building?';
+
+        const btnContainer = document.createElement('div');
+        btnContainer.classList.add('demolishmodal-btn-container');
+
+        const yesBtn = document.createElement('button');
+        yesBtn.textContent = 'Yes';
+        const noBtn = document.createElement('button');
+        noBtn.textContent = 'No';
+
+        btnContainer.appendChild(yesBtn);
+        btnContainer.appendChild(noBtn);
+
+        modalContent.appendChild(confirmText);
+        modalContent.appendChild(btnContainer);
+
+        demolishmodal.appendChild(modalContent);
+        document.body.appendChild(demolishmodal); // Append to body
+
+        this.isModalOpen = true;
     
-            const confirmText = document.createElement('p');
-            confirmText.textContent = 'Are you sure you want to demolish this building?';
-    
-            const btnContainer = document.createElement('div');
-            btnContainer.classList.add('demolishmodal-btn-container');
-    
-            const yesBtn = document.createElement('button');
-            yesBtn.textContent = 'Yes';
-            yesBtn.addEventListener('click', () => {
+       // Event listener for 'Yes' button
+        yesBtn.addEventListener('click', () => {
+            if (this.placedBuildings.length < 2) {
+                alert("You cannot demolish the last building.");
+            } else {
                 this.confirmDemolish(row, col);
-                modal.remove();
-                this.isModalOpen = false;
-            });
+            }
+            this.isModalOpen = false;
+            demolishmodal.remove(); // Remove the modal from DOM
+        });
+
+        // Event listener for 'No' button
+        noBtn.addEventListener('click', () => {
+            this.isModalOpen = false;
+            demolishmodal.remove(); // Remove the modal from DOM
+            console.log("Removed Modal");
+        });
+    }    
     
-            const noBtn = document.createElement('button');
-            noBtn.textContent = 'No';
-            noBtn.addEventListener('click', () => {
-                modal.remove();
-                this.isModalOpen = false;
-            });
-    
-            btnContainer.appendChild(yesBtn);
-            btnContainer.appendChild(noBtn);
-    
-            modalContent.appendChild(confirmText);
-            modalContent.appendChild(btnContainer);
-    
-            modal.appendChild(modalContent);
-            cell.appendChild(modal);
-        }
-    }
 
     confirmDemolish(row, col) {
         if (this.grid[row][col] !== null) {
+            console.log(this.grid[row][col]);
+            // Remove the first occurrence of demolished building from this.buildings
+            const indexToRemove = this.placedBuildings.indexOf(this.grid[row][col]);
+            console.log(indexToRemove);
+            if (indexToRemove !== -1) {
+                this.placedBuildings.splice(indexToRemove, 1);
+            }
+            console.log(this.placedBuildings);
             this.grid[row][col] = null; // Remove the building
             this.coins--; // Deduct 1 coin for demolition
             this.updateHeaderInfo();
