@@ -283,15 +283,6 @@ class ArcadeGame {
             cell.addEventListener('dragover', (event) => this.dragOver(event));
             cell.addEventListener('dragenter', (event) => this.dragEnter(event));
             cell.addEventListener('drop', (event) => this.drop(event));
-
-            cell.addEventListener('contextmenu', (event) => {
-                event.preventDefault(); // Prevent default context menu
-    
-                const row = parseInt(cell.dataset.row);
-                const col = parseInt(cell.dataset.col);
-    
-                this.demolishBuilding(row, col);
-            });
         });
     }
 
@@ -312,7 +303,18 @@ class ArcadeGame {
         const row = parseInt(cell.dataset.row);
         const col = parseInt(cell.dataset.col);
 
-        if (this.selectedBuilding && this.isValidPlacement(row, col)) {
+        // Check if the cell already has a building
+        if (this.grid[row][col] !== null) {
+            this.demolishBuilding(row, col);
+            this.placeBuilding(row, col);
+            this.updateCoinsAndPoints();
+            this.turn++;
+            this.updateHeaderInfo();
+            this.selectRandomBuildings();
+            this.renderGrid();
+            this.renderCurrentBuildings();
+            this.addEventListeners();
+        } else if (this.selectedBuilding && this.isValidPlacement(row, col)) {
             this.placeBuilding(row, col);
             this.updateCoinsAndPoints();
             this.turn++;
@@ -369,6 +371,7 @@ class ArcadeGame {
     
     placeBuilding(row, col) {
         this.grid[row][col] = this.selectedBuilding;
+        console.log(this.selectedBuilding);
         this.selectedBuilding = null; // Reset selectedBuilding after placement
     }
 
@@ -386,6 +389,8 @@ class ArcadeGame {
                     buildingImg.src = `../images/${this.getBuildingImage(this.grid[i][j])}`
                     buildingImg.style.width="100%";
                     buildingImg.style.height="100%";
+                    buildingImg.dataset.row = i;
+                    buildingImg.dataset.col = j;
                     cell.appendChild(buildingImg);
                 }
                 gridContainer.appendChild(cell);
@@ -393,170 +398,118 @@ class ArcadeGame {
         }
     }
 
-    updateCoinsAndPoints() {   
-        // Recalculate based on current grid state
-        const clusters = {};
+    updateCoinsAndPoints() {
+        let newCoins = this.coins;
+        let newPoints = this.points;
     
+        const directions = [
+            { dx: -1, dy: 0 }, { dx: 1, dy: 0 }, // up, down
+            { dx: 0, dy: -1 }, { dx: 0, dy: 1 }  // left, right
+        ];
+    
+        // Temporary storage for connected roads in the same row
+        const roadSegmentsInRow = Array(this.gridSize).fill(0);
+    
+        // Iterate over the grid to calculate points and coins
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 const building = this.grid[i][j];
-                if (building) {
-                    switch (building) {
-                        case 'R':
-                            this.coins++;
-                            this.points += this.calculateResidentialPoints(i, j);
-                            clusters[`R_${i}_${j}`] = true;
-                            break;
-                        case 'I':
-                            this.coins += 2;
-                            this.points += this.calculateIndustryPoints(i, j);
-                            break;
-                        case 'C':
-                            this.coins += 3;
-                            this.points += this.calculateCommercialPoints(i, j);
-                            break;
-                        case 'O':
-                            this.points += this.calculateParkPoints(i, j);
-                            break;
-                        case '*':
-                            this.points += this.calculateRoadPoints(i, j);
-                            break;
+                if (!building) continue;
+    
+                let adjacentBuildings = {
+                    'R': 0,
+                    'I': 0,
+                    'C': 0,
+                    'O': 0,
+                    '*': 0
+                };
+    
+                // Check adjacent cells
+                for (const dir of directions) {
+                    const r = i + dir.dx;
+                    const c = j + dir.dy;
+    
+                    if (this.isValidCell(r, c) && this.grid[r][c]) {
+                        adjacentBuildings[this.grid[r][c]]++;
                     }
                 }
-            }
-        }
     
-        // Deduct upkeep costs
-        Object.keys(clusters).forEach(cluster => {
-            this.coins--;
-        });
-    
-        console.log(this.currentBuildings);
-    
-        this.coins--; // Deduct 1 coin for placing a building
-    }
-
-    calculateResidentialPoints(row, col) {
-        let points = 0;
-    
-        // Check all 8 possible directions around the cell
-        const directions = [
-            { dx: -1, dy: -1 }, { dx: -1, dy: 0 }, { dx: -1, dy: 1 },
-            { dx: 0, dy: -1 },                     { dx: 0, dy: 1 },
-            { dx: 1, dy: -1 }, { dx: 1, dy: 0 }, { dx: 1, dy: 1 }
-        ];
-    
-        let hasIndustry = false;
-        directions.forEach(dir => {
-            const r = row + dir.dx;
-            const c = col + dir.dy;
-    
-            if (this.isValidCell(r, c)) {
-                const building = this.grid[r][c];
-                if (building === 'R' || building === 'C') {
-                    points++;
-                } else if (building === 'O') {
-                    points += 2;
-                } else if (building === 'I') {
-                    hasIndustry = true;
+                switch (building) {
+                    case 'R':
+                        if (adjacentBuildings['I'] > 0) {
+                            newPoints += 1;
+                        } else {
+                            newPoints += adjacentBuildings['R'] + adjacentBuildings['C'] + (2 * adjacentBuildings['O']);
+                        }
+                        newCoins += 1; // Generates 1 coin per turn
+                        break;
+                    case 'I':
+                        newPoints += 1; // Scores 1 point per industry in the city
+                        newCoins += 2; // Generates 2 coins per turn
+                        newCoins += adjacentBuildings['R']; // Generates 1 coin per adjacent residential
+                        break;
+                    case 'C':
+                        newPoints += adjacentBuildings['C']; // Scores 1 point per adjacent commercial
+                        newCoins += 3; // Generates 3 coins per turn
+                        newCoins += adjacentBuildings['R']; // Generates 1 coin per adjacent residential
+                        break;
+                    case 'O':
+                        newPoints += adjacentBuildings['O']; // Scores 1 point per adjacent park
+                        newCoins -= 1; // Costs 1 coin to upkeep
+                        break;
+                    case '*':
+                        // Count the road segments in the same row
+                        roadSegmentsInRow[i]++;
+                        break;
                 }
             }
-        });
-        //If there is an industry near, points will be default to 1.
-        return hasIndustry ? 1 : points;
-    }
-
-    calculateIndustryPoints(row, col) {
-        let points = 1;
+        }
     
-        // Count industries
-        // for (let r = 0; r < this.gridSize; r++) {
-        //     for (let c = 0; c < this.gridSize; c++) {
-        //         if (this.grid[r][c] === 'I') {
-        //             points++;
-        //         }
-        //     }
-        // }
-    
-        // Generate coins based on adjacent residential buildings
-        const directions = [
-            { dx: -1, dy: 0 }, { dx: 1, dy: 0 }, { dx: 0, dy: -1 }, { dx: 0, dy: 1 }
-        ];
-    
-        directions.forEach(dir => {
-            const r = row + dir.dx;
-            const c = col + dir.dy;
-    
-            if (this.isValidCell(r, c) && this.grid[r][c] === 'R') {
-                this.coins++;
-            }
-        });
-    
-        return points;
-    }
-
-    calculateCommercialPoints(row, col) {
-        let points = 0;
-    
-        // Count adjacent commercial buildings
-        const directions = [
-            { dx: -1, dy: 0 }, { dx: 1, dy: 0 }, { dx: 0, dy: -1 }, { dx: 0, dy: 1 }
-        ];
-    
-        directions.forEach(dir => {
-            const r = row + dir.dx;
-            const c = col + dir.dy;
-    
-            if (this.isValidCell(r, c) && this.grid[r][c] === 'C') {
-                points++;
-            }
-        });
-    
-        // Generate coins based on adjacent residential buildings
-        directions.forEach(dir => {
-            const r = row + dir.dx;
-            const c = col + dir.dy;
-    
-            if (this.isValidCell(r, c) && this.grid[r][c] === 'R') {
-                this.coins++;
-            }
-        });
-    
-        return points;
-    }
-
-    calculateParkPoints(row, col) {
-        let points = 0;
-    
-        // Count adjacent park buildings
-        const directions = [
-            { dx: -1, dy: 0 }, { dx: 1, dy: 0 }, { dx: 0, dy: -1 }, { dx: 0, dy: 1 }
-        ];
-    
-        directions.forEach(dir => {
-            const r = row + dir.dx;
-            const c = col + dir.dy;
-    
-            if (this.isValidCell(r, c) && this.grid[r][c] === 'O') {
-                points++;
-            }
-        });
-    
-        return points;
-    }
-
-    calculateRoadPoints(row, col) {
-        let points = 0;
-    
-        // Count connected roads in the same row
-        // Might need to change
-        for (let c = 0; c < this.gridSize; c++) {
-            if (this.grid[row][c] === '*') {
-                points++;
+        // Calculate points for road segments
+        for (let i = 0; i < this.gridSize; i++) {
+            if (roadSegmentsInRow[i] > 1) {
+                newPoints += roadSegmentsInRow[i];
+            } else if (roadSegmentsInRow[i] === 1) {
+                newCoins -= 1; // Unconnected road segment costs 1 coin
             }
         }
     
-        return points;
+        // Deduct upkeep costs for clusters of residential buildings
+        const visited = Array.from({ length: this.gridSize }, () => Array(this.gridSize).fill(false));
+        const directionsCluster = [
+            { dx: -1, dy: 0 }, { dx: 1, dy: 0 },
+            { dx: 0, dy: -1 }, { dx: 0, dy: 1 }
+        ];
+    
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                if (this.grid[i][j] === 'R' && !visited[i][j]) {
+                    let queue = [{ x: i, y: j }];
+                    visited[i][j] = true;
+                    let clusterSize = 0;
+    
+                    while (queue.length > 0) {
+                        const { x, y } = queue.shift();
+                        clusterSize++;
+    
+                        for (const dir of directionsCluster) {
+                            const r = x + dir.dx;
+                            const c = y + dir.dy;
+    
+                            if (this.isValidCell(r, c) && this.grid[r][c] === 'R' && !visited[r][c]) {
+                                visited[r][c] = true;
+                                queue.push({ x: r, y: c });
+                            }
+                        }
+                    }
+    
+                    newCoins -= Math.ceil(clusterSize / 4); // Each cluster of 4 residential buildings requires 1 coin
+                }
+            }
+        }
+    
+        this.coins = newCoins;
+        this.points = newPoints;
     }
 
     isValidCell(row, col) {
@@ -632,7 +585,6 @@ class ArcadeGame {
         if (this.grid[row][col] !== null) {
             this.grid[row][col] = null; // Remove the building
             this.coins--; // Deduct 1 coin for demolition
-            this.turn++;
             this.updateHeaderInfo();
             this.renderGrid();
             this.renderCurrentBuildings();
