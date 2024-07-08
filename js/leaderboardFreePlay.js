@@ -147,7 +147,7 @@ const updateLeaderboard = (data, GameType) => {
 
                 const playerName = document.createElement('div');
                 playerName.classList.add('player-name');
-                playerName.textContent = player.name;
+                playerName.textContent = player.name + "(You)";
                 rankContainer.appendChild(playerName);
 
                 const score = document.createElement('div');
