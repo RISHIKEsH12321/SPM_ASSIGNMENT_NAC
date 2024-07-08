@@ -111,29 +111,29 @@ function drop(event) {
         // Check if we need to expand the grid
         const gridContainer = document.getElementById('grid-container');
         const numCells = gridContainer.querySelectorAll('.grid-cell').length;
-        if (numCells === 25) { // Current grid size is 5x5
-            if (isBorderCell(cell)) {
-                expandGrid();
-            }
+        const gridSize = Math.sqrt(numCells);
+        if (gridSize * gridSize === numCells && isBorderCell(cell, gridSize) && numCells !== 10000) {
+            expandGrid(gridSize);
         }
         endTurn();
     }
 }
 
-function isBorderCell(cell) {
+function isBorderCell(cell, gridSize) {
     const cellId = parseInt(cell.id.replace('cell', ''));
-    const row = Math.floor((cellId - 1) / 5);
-    const col = (cellId - 1) % 5;
-
-    return (row === 0 || row === 4 || col === 0 || col === 4);
+    const row = Math.floor((cellId - 1) / gridSize);
+    const col = (cellId - 1) % gridSize;
+    console.log(true);
+    return (row === 0 || row === gridSize - 1 || col === 0 || col === gridSize - 1);
 }
 
-function expandGrid() {
-    const gridContainer = document.getElementById('grid-container');
-    const currentNumCells = gridContainer.querySelectorAll('.grid-cell').length;
-    const newCells = 25; // Increase by another 5x5 grid
 
-    for (let i = currentNumCells + 1; i <= currentNumCells + newCells; i++) {
+function expandGrid(currentGridSize) {
+    const gridContainer = document.getElementById('grid-container');
+    const newGridSize = currentGridSize + 5;
+    const newCells = newGridSize * newGridSize - currentGridSize * currentGridSize;
+
+    for (let i = currentGridSize * currentGridSize + 1; i <= currentGridSize * currentGridSize + newCells; i++) {
         const newCell = document.createElement('div');
         newCell.classList.add('grid-cell');
         newCell.id = `cell${i}`;
@@ -144,13 +144,10 @@ function expandGrid() {
         newCell.addEventListener('drop', drop);
     }
 
-    // Calculate new number of columns dynamically
-    const numColumns = Math.ceil(Math.sqrt(currentNumCells + newCells)) + 2;
-
     // Update CSS grid-template-columns property
-    gridContainer.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
+    gridContainer.style.gridTemplateColumns = `repeat(${newGridSize}, 1fr)`;
 
-    getGrids(currentNumCells + newCells); // Update grids array with new cells
+    getGrids(newGridSize * newGridSize); // Update grids array with new cells
 }
 
 // function drop(event) {
