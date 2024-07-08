@@ -20,11 +20,19 @@ const buildings = [
     { type: 'Commercial', src: '../images/Commercial.png' }
 ];
 
+// function getGrids(gridNo) {
+//     for (let i = 0; i < gridNo; i++) {
+//         grids.push(document.getElementById("cell" + (i + 1)));
+//     }
+// }
+
 function getGrids(gridNo) {
+    grids = []; // Clear existing grids array
     for (let i = 0; i < gridNo; i++) {
         grids.push(document.getElementById("cell" + (i + 1)));
     }
 }
+
 
 function displayRandomBuildings() {
     const iconBar = document.getElementById('icon-bar');
@@ -70,10 +78,28 @@ function drag(event) {
     event.dataTransfer.setData("text", event.target.getAttribute('data-building'));
 }
 
+//Original
+// function drop(event) {
+//     event.preventDefault();
+//     const buildingType = event.dataTransfer.getData("text");
+//     const cell = event.target;
+//     if (cell.classList.contains('grid-cell')) {
+//         cell.setAttribute('data-building', buildingType); // Store the building type in the cell
+//         var img = document.createElement("img");
+//         img.classList.add("gridImg");
+//         img.src =  "../images/"+ buildingType +".png"; 
+//         img.setAttribute('draggable', 'false'); 
+//         cell.appendChild(img);
+//         endTurn();
+//     }
+// }
+
+// Wokring expand
 function drop(event) {
     event.preventDefault();
     const buildingType = event.dataTransfer.getData("text");
     const cell = event.target;
+
     if (cell.classList.contains('grid-cell')) {
         cell.setAttribute('data-building', buildingType); // Store the building type in the cell
         var img = document.createElement("img");
@@ -81,9 +107,114 @@ function drop(event) {
         img.src =  "../images/"+ buildingType +".png"; 
         img.setAttribute('draggable', 'false'); 
         cell.appendChild(img);
+
+        // Check if we need to expand the grid
+        const gridContainer = document.getElementById('grid-container');
+        const numCells = gridContainer.querySelectorAll('.grid-cell').length;
+        if (numCells === 25) { // Current grid size is 5x5
+            if (isBorderCell(cell)) {
+                expandGrid();
+            }
+        }
         endTurn();
     }
 }
+
+function isBorderCell(cell) {
+    const cellId = parseInt(cell.id.replace('cell', ''));
+    const row = Math.floor((cellId - 1) / 5);
+    const col = (cellId - 1) % 5;
+
+    return (row === 0 || row === 4 || col === 0 || col === 4);
+}
+
+function expandGrid() {
+    const gridContainer = document.getElementById('grid-container');
+    const currentNumCells = gridContainer.querySelectorAll('.grid-cell').length;
+    const newCells = 25; // Increase by another 5x5 grid
+
+    for (let i = currentNumCells + 1; i <= currentNumCells + newCells; i++) {
+        const newCell = document.createElement('div');
+        newCell.classList.add('grid-cell');
+        newCell.id = `cell${i}`;
+        gridContainer.appendChild(newCell);
+
+        // Add event listeners to new grid cell
+        newCell.addEventListener('dragover', allowDrop);
+        newCell.addEventListener('drop', drop);
+    }
+
+    // Calculate new number of columns dynamically
+    const numColumns = Math.ceil(Math.sqrt(currentNumCells + newCells)) + 2;
+
+    // Update CSS grid-template-columns property
+    gridContainer.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
+
+    getGrids(currentNumCells + newCells); // Update grids array with new cells
+}
+
+// function drop(event) {
+//     event.preventDefault();
+//     const buildingType = event.dataTransfer.getData("text");
+//     const cell = event.target;
+
+//     if (cell.classList.contains('grid-cell')) {
+//         const cellId = parseInt(cell.id.replace('cell', ''));
+//         const numCells = document.querySelectorAll('.grid-cell').length;
+
+//         if (isOnBorder(cellId, numCells)) {
+//             expandGrid();
+//         }
+
+//         cell.setAttribute('data-building', buildingType); // Store the building type in the cell
+//         var img = document.createElement("img");
+//         img.classList.add("gridImg");
+//         img.src = `../images/${buildingType}.png`;
+//         img.setAttribute('draggable', 'false');
+//         cell.appendChild(img);
+//         endTurn();
+//     }
+// }
+
+// function isOnBorder(cellId, numCells) {
+//     const numRows = Math.ceil(Math.sqrt(numCells));
+//     const row = Math.floor((cellId - 1) / numRows);
+//     const col = (cellId - 1) % numRows;
+
+//     // Check if cell is on the border (last row or column)
+//     if (row === numRows - 1 || col === numRows - 1) {
+//         return true;
+//     }
+
+//     return false;
+// }
+
+// function expandGrid() {
+//     const gridContainer = document.getElementById('grid-container');
+//     const currentNumCells = gridContainer.querySelectorAll('.grid-cell').length;
+//     const newCells = 25; // Increase by another 5x5 grid
+
+//     for (let i = currentNumCells + 1; i <= currentNumCells + newCells; i++) {
+//         const newCell = document.createElement('div');
+//         newCell.classList.add('grid-cell');
+//         newCell.id = `cell${i}`;
+//         gridContainer.appendChild(newCell);
+
+//         // Add event listeners to new grid cell
+//         newCell.addEventListener('dragover', allowDrop);
+//         newCell.addEventListener('drop', drop);
+//     }
+
+//     // Calculate new number of columns and rows dynamically
+//     const numRows = Math.ceil(Math.sqrt(currentNumCells + newCells));
+//     const numColumns = Math.ceil((currentNumCells + newCells) / numRows);
+
+//     // Update CSS grid-template-columns and grid-auto-rows properties
+//     gridContainer.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
+//     gridContainer.style.gridTemplateRows = `repeat(${numRows}, 1fr)`;
+
+//     getGrids(currentNumCells + newCells); // Update grids array with new cells
+// }
 
 
 function startTurn() {
