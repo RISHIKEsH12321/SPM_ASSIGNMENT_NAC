@@ -1,6 +1,8 @@
 var grids = [];
 var points = 0
 var turn = 0;
+var buildingCoordinates = []; 
+
 
 document.addEventListener("DOMContentLoaded", () => {
     getGrids(25); // Initial 5x5 grid
@@ -101,6 +103,14 @@ function drop(event) {
     const cell = event.target;
 
     if (cell.classList.contains('grid-cell')) {
+        const cellId = parseInt(cell.id.replace('cell', ''));
+        var gridSize = Math.sqrt(grids.length);
+        const row = Math.floor((cellId - 1) / gridSize);
+        const col = (cellId - 1) % gridSize;
+
+        // Store the building type and its coordinates
+        buildingCoordinates.push({ row, col, type: buildingType });
+
         cell.setAttribute('data-building', buildingType); // Store the building type in the cell
         var img = document.createElement("img");
         img.classList.add("gridImg");
@@ -111,47 +121,64 @@ function drop(event) {
         // Check if we need to expand the grid
         const gridContainer = document.getElementById('grid-container');
         const numCells = gridContainer.querySelectorAll('.grid-cell').length;
-        if (numCells === 25) { // Current grid size is 5x5
-            if (isBorderCell(cell)) {
-                expandGrid();
-            }
+        gridSize = Math.sqrt(numCells);
+
+        if (gridSize * gridSize === numCells && isBorderCell(cell, gridSize) && numCells !== 625) {
+            expandGrid(gridSize);
         }
         endTurn();
     }
 }
 
-function isBorderCell(cell) {
+function isBorderCell(cell, gridSize) {
     const cellId = parseInt(cell.id.replace('cell', ''));
-    const row = Math.floor((cellId - 1) / 5);
-    const col = (cellId - 1) % 5;
-
-    return (row === 0 || row === 4 || col === 0 || col === 4);
+    const row = Math.floor((cellId - 1) / gridSize);
+    const col = (cellId - 1) % gridSize;
+    console.log(true);
+    return (row === 0 || row === gridSize - 1 || col === 0 || col === gridSize - 1);
 }
 
-function expandGrid() {
+
+function expandGrid(currentGridSize) {
     const gridContainer = document.getElementById('grid-container');
-    const currentNumCells = gridContainer.querySelectorAll('.grid-cell').length;
-    const newCells = 25; // Increase by another 5x5 grid
-
-    for (let i = currentNumCells + 1; i <= currentNumCells + newCells; i++) {
-        const newCell = document.createElement('div');
-        newCell.classList.add('grid-cell');
-        newCell.id = `cell${i}`;
-        gridContainer.appendChild(newCell);
-
-        // Add event listeners to new grid cell
-        newCell.addEventListener('dragover', allowDrop);
-        newCell.addEventListener('drop', drop);
+    const newGridSize = currentGridSize + 5;
+    
+    // Clear existing cells to avoid duplication
+    while (gridContainer.firstChild) {
+        gridContainer.removeChild(gridContainer.firstChild);
     }
+    
+    for (let i = 0; i < newGridSize; i++) {
+        for (let j = 0; j < newGridSize; j++) {
+            const cellId = i * newGridSize + j + 1;
+            const newCell = document.createElement('div');
+            newCell.classList.add('grid-cell');
+            newCell.id = `cell${cellId}`;
+            gridContainer.appendChild(newCell);
+            
+            // Add event listeners to new grid cell
+            newCell.addEventListener('dragover', allowDrop);
+            newCell.addEventListener('drop', drop);
+        }
+    }
+    
+    gridContainer.style.gridTemplateColumns = `repeat(${newGridSize}, 1fr)`;
+    getGrids(newGridSize * newGridSize);
 
-    // Calculate new number of columns dynamically
-    const numColumns = Math.ceil(Math.sqrt(currentNumCells + newCells)) + 2;
-
-    // Update CSS grid-template-columns property
-    gridContainer.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
-
-    getGrids(currentNumCells + newCells); // Update grids array with new cells
+    // Reassign buildings to their correct cells based on stored coordinates
+    buildingCoordinates.forEach(({ row, col, type }) => {
+        const cellId = row * newGridSize + col + 1;
+        const cell = document.getElementById(`cell${cellId}`);
+        if (cell) {
+            var img = document.createElement("img");
+            img.classList.add("gridImg");
+            img.src = "../images/" + type + ".png";
+            img.setAttribute('draggable', 'false');
+            cell.appendChild(img);
+        }
+    });
 }
+
 
 // function drop(event) {
 //     event.preventDefault();
