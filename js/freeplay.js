@@ -123,7 +123,7 @@ function drop(event) {
         const numCells = gridContainer.querySelectorAll('.grid-cell').length;
         gridSize = Math.sqrt(numCells);
 
-        if (gridSize * gridSize === numCells && isBorderCell(cell, gridSize) && numCells !== 10000) {
+        if (gridSize * gridSize === numCells && isBorderCell(cell, gridSize) && numCells !== 625) {
             expandGrid(gridSize);
         }
         endTurn();
