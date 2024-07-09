@@ -53,14 +53,14 @@ body {
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(5, 80px);
+    grid-template-columns: repeat(5, 1fr);
     grid-gap: 5px;
     margin: 20px 0;
 }
 
 .grid-cell {
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     background-color: orange;
     border: 2px solid #333;
 }
@@ -79,6 +79,6 @@ body {
 }
 
 .gridImg{
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
 }
