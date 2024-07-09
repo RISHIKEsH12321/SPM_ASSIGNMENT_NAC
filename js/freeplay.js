@@ -175,8 +175,10 @@ function expandGrid(currentGridSize) {
             img.src = "../images/" + type + ".png";
             img.setAttribute('draggable', 'false');
             cell.appendChild(img);
+            cell.setAttribute('data-building', 'Residential');
         }
     });
+    //calculatePoints();
 }
 
 
@@ -325,70 +327,166 @@ function calculateParkPoints(cell) {
     return countAdjacentBuildings(cell, 'Park');
 }
 
+// function calculateRoadPoints() {
+//     let roadPoints = 0;
+
+//     for (let row = 0; row < 5; row++) { // Assuming a 5x5 grid for initial implementation
+//         let rowStart = row * 5;
+//         let currentRow = [];
+
+//         for (let col = 0; col < 5; col++) {
+//             let currentIndex = rowStart + col;
+//             currentRow.push(grids[currentIndex].getAttribute('data-building') === 'Road');
+//         }
+//         console.log("row: "+ row)
+//         if (currentRow[0] && currentRow[1] && !currentRow[2] && !currentRow[3] && !currentRow[4]) {
+//             roadPoints++;
+//             console.log(1);
+//         } else if (!currentRow[0] && currentRow[1] && currentRow[2] && !currentRow[3] && !currentRow[4]) {
+//             roadPoints++;
+//             console.log(2);
+//         } else if (!currentRow[0] && !currentRow[1] && currentRow[2] && currentRow[3] && !currentRow[4]) {
+//             roadPoints++;
+//             console.log(3);
+//         } else if (!currentRow[0] && !currentRow[1] && !currentRow[2] && currentRow[3] && currentRow[4]) {
+//             roadPoints++;
+//             console.log(4);
+//         } else if (currentRow[0] && currentRow[1] && currentRow[2] && !currentRow[3] && !currentRow[4]) {
+//             roadPoints += 2;
+//             console.log(5);
+//         } else if (!currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && !currentRow[4]) {
+//             roadPoints += 2;
+//             console.log(6);
+//         } else if (!currentRow[0] && !currentRow[1] && currentRow[2] && currentRow[3] && currentRow[4]) {
+//             roadPoints += 2;
+//             console.log(7);
+//         } else if (currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && !currentRow[4]) {
+//             roadPoints += 3;
+//             console.log(8);
+//         } else if (!currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && currentRow[4]) {
+//             roadPoints += 3;
+//             console.log(9);
+//         } else if (currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && currentRow[4]) {
+//             roadPoints += 4;
+//             console.log(10);
+//         }
+    
+//     }
+
+//     return roadPoints;
+// }
+
 function calculateRoadPoints() {
     let roadPoints = 0;
+    const gridSize = Math.sqrt(grids.length); // Assuming grids is the array of grid elements
 
-    for (let row = 0; row < 5; row++) { // Assuming a 5x5 grid for initial implementation
-        let rowStart = row * 5;
+    for (let row = 0; row < gridSize; row++) {
+        let rowStart = row * gridSize;
         let currentRow = [];
 
-        for (let col = 0; col < 5; col++) {
+        for (let col = 0; col < gridSize; col++) {
             let currentIndex = rowStart + col;
             currentRow.push(grids[currentIndex].getAttribute('data-building') === 'Road');
         }
-        console.log("row: "+ row)
-        if (currentRow[0] && currentRow[1] && !currentRow[2] && !currentRow[3] && !currentRow[4]) {
+
+        // Evaluate road configurations dynamically based on gridSize
+        if (checkRoadConfiguration(currentRow, [true, true, false, false, false])) {
             roadPoints++;
             console.log(1);
-        } else if (!currentRow[0] && currentRow[1] && currentRow[2] && !currentRow[3] && !currentRow[4]) {
+        } else if (checkRoadConfiguration(currentRow, [false, true, true, false, false])) {
             roadPoints++;
             console.log(2);
-        } else if (!currentRow[0] && !currentRow[1] && currentRow[2] && currentRow[3] && !currentRow[4]) {
+        } else if (checkRoadConfiguration(currentRow, [false, false, true, true, false])) {
             roadPoints++;
             console.log(3);
-        } else if (!currentRow[0] && !currentRow[1] && !currentRow[2] && currentRow[3] && currentRow[4]) {
+        } else if (checkRoadConfiguration(currentRow, [false, false, false, true, true])) {
             roadPoints++;
             console.log(4);
-        } else if (currentRow[0] && currentRow[1] && currentRow[2] && !currentRow[3] && !currentRow[4]) {
+        } else if (checkRoadConfiguration(currentRow, [true, true, true, false, false])) {
             roadPoints += 2;
             console.log(5);
-        } else if (!currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && !currentRow[4]) {
+        } else if (checkRoadConfiguration(currentRow, [false, true, true, true, false])) {
             roadPoints += 2;
             console.log(6);
-        } else if (!currentRow[0] && !currentRow[1] && currentRow[2] && currentRow[3] && currentRow[4]) {
+        } else if (checkRoadConfiguration(currentRow, [false, false, true, true, true])) {
             roadPoints += 2;
             console.log(7);
-        } else if (currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && !currentRow[4]) {
+        } else if (checkRoadConfiguration(currentRow, [true, true, true, true, false])) {
             roadPoints += 3;
             console.log(8);
-        } else if (!currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && currentRow[4]) {
+        } else if (checkRoadConfiguration(currentRow, [false, true, true, true, true])) {
             roadPoints += 3;
             console.log(9);
-        } else if (currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && currentRow[4]) {
+        } else if (checkRoadConfiguration(currentRow, [true, true, true, true, true])) {
             roadPoints += 4;
             console.log(10);
         }
-    
     }
 
     return roadPoints;
 }
 
+function checkRoadConfiguration(currentRow, pattern) {
+    const gridSize = currentRow.length;
+
+    for (let i = 0; i < gridSize; i++) {
+        if (currentRow[i] !== pattern[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 
+
+
+
+// function getAdjacentBuildings(cell) {
+//     const cellId = cell.id.match(/\d+/)[0];
+//     const gridNo = parseInt(cellId, 10);
+
+//     // Calculate row and column number based on grid number (assuming a 5x5 grid)
+//     const row = Math.floor((gridNo - 1) / 5);
+//     const col = (gridNo - 1) % 5;
+
+//     const adjacentCells = [];
+
+//     // Check the right cell
+//     if (col < 4) {
+//         adjacentCells.push(document.getElementById(`cell${gridNo + 1}`));
+//     }
+//     // Check the left cell
+//     if (col > 0) {
+//         adjacentCells.push(document.getElementById(`cell${gridNo - 1}`));
+//     }
+//     // Check the cell above
+//     if (row > 0) {
+//         adjacentCells.push(document.getElementById(`cell${gridNo - 5}`));
+//     }
+//     // Check the cell below
+//     if (row < 4) {
+//         adjacentCells.push(document.getElementById(`cell${gridNo + 5}`));
+//     }
+
+//     return adjacentCells
+//         .filter(adjCell => adjCell && adjCell.getAttribute('data-building'))
+//         .map(adjCell => adjCell.getAttribute('data-building'));
+// }
 
 function getAdjacentBuildings(cell) {
     const cellId = cell.id.match(/\d+/)[0];
     const gridNo = parseInt(cellId, 10);
+    const gridSize = Math.sqrt(grids.length); // Assuming grids is the array of grid elements
 
-    // Calculate row and column number based on grid number (assuming a 5x5 grid)
-    const row = Math.floor((gridNo - 1) / 5);
-    const col = (gridNo - 1) % 5;
+    // Calculate row and column number based on grid number
+    const row = Math.floor((gridNo - 1) / gridSize);
+    const col = (gridNo - 1) % gridSize;
 
     const adjacentCells = [];
 
     // Check the right cell
-    if (col < 4) {
+    if (col < gridSize - 1) {
         adjacentCells.push(document.getElementById(`cell${gridNo + 1}`));
     }
     // Check the left cell
@@ -397,17 +495,18 @@ function getAdjacentBuildings(cell) {
     }
     // Check the cell above
     if (row > 0) {
-        adjacentCells.push(document.getElementById(`cell${gridNo - 5}`));
+        adjacentCells.push(document.getElementById(`cell${gridNo - gridSize}`));
     }
     // Check the cell below
-    if (row < 4) {
-        adjacentCells.push(document.getElementById(`cell${gridNo + 5}`));
+    if (row < gridSize - 1) {
+        adjacentCells.push(document.getElementById(`cell${gridNo + gridSize}`));
     }
 
     return adjacentCells
         .filter(adjCell => adjCell && adjCell.getAttribute('data-building'))
         .map(adjCell => adjCell.getAttribute('data-building'));
 }
+
 
 
 function countAdjacentBuildings(cell, type) {
