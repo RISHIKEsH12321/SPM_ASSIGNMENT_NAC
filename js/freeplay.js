@@ -14,21 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const gridSize = gameState.gridSize;
 
         // Restore the grid size
-        expandGrid(gridSize - 5);
+        expandGrid(gridSize - 5, buildingCoordinates);
 
-        // Restore buildings
-        buildingCoordinates.forEach(({ row, col, type }) => {
-            const cellId = row * gridSize + col + 1;
-            const cell = document.getElementById(`cell${cellId}`);
-            if (cell) {
-                var img = document.createElement("img");
-                img.classList.add("gridImg");
-                img.src = "../images/" + type + ".png";
-                img.setAttribute('draggable', 'false');
-                cell.appendChild(img);
-                cell.setAttribute('data-building', type);
-            }
-        });
         updateTurnInfo();
         calculatePoints();
 
@@ -177,6 +164,12 @@ function drop(event) {
         if (gridSize * gridSize === numCells && isBorderCell(cell, gridSize) && numCells !== 625) {
             expandGrid(gridSize);
         }
+
+        cell.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            removeBuilding(cell, row, col);
+        });
+
         endTurn();
     }
 }
@@ -192,12 +185,10 @@ function isBorderCell(cell, gridSize) {
 function expandGrid(currentGridSize) {
     const gridContainer = document.getElementById('grid-container');
     const newGridSize = currentGridSize + 5;
-    
+
     // Clear existing cells to avoid duplication
-    while (gridContainer.firstChild) {
-        gridContainer.removeChild(gridContainer.firstChild);
-    }
-    
+    gridContainer.innerHTML = '';
+
     for (let i = 0; i < newGridSize; i++) {
         for (let j = 0; j < newGridSize; j++) {
             const cellId = i * newGridSize + j + 1;
@@ -205,29 +196,33 @@ function expandGrid(currentGridSize) {
             newCell.classList.add('grid-cell');
             newCell.id = `cell${cellId}`;
             gridContainer.appendChild(newCell);
-            
-            // Add event listeners to new grid cell
+
+            // Reattach event listeners to new grid cell
             newCell.addEventListener('dragover', allowDrop);
             newCell.addEventListener('drop', drop);
+            
+            // Check if there's a building at this cell and display it
+            const existingBuilding = buildingCoordinates.find(building => building.row === i && building.col === j);
+            if (existingBuilding) {
+                const img = document.createElement("img");
+                img.classList.add("gridImg");
+                img.src = "../images/" + existingBuilding.type + ".png";
+                img.setAttribute('draggable', 'false');
+                newCell.appendChild(img);
+                newCell.setAttribute('data-building', existingBuilding.type);
+                
+                // Reattach context menu listener for existing buildings
+                newCell.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    removeBuilding(newCell, i, j);
+                });
+            }
         }
     }
-    
+
     gridContainer.style.gridTemplateColumns = `repeat(${newGridSize}, 1fr)`;
     getGrids(newGridSize * newGridSize);
 
-    // Reassign buildings to their correct cells based on stored coordinates
-    buildingCoordinates.forEach(({ row, col, type }) => {
-        const cellId = row * newGridSize + col + 1;
-        const cell = document.getElementById(`cell${cellId}`);
-        if (cell) {
-            var img = document.createElement("img");
-            img.classList.add("gridImg");
-            img.src = "../images/" + type + ".png";
-            img.setAttribute('draggable', 'false');
-            cell.appendChild(img);
-            cell.setAttribute('data-building', type);
-        }
-    });
     calculatePoints();
 }
 
@@ -439,8 +434,6 @@ function saveGame() {
     });
 }
 
-
-
 function loadGame() {
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     const userid = currentUser._id;
@@ -471,21 +464,8 @@ function loadGame() {
         const gridSize = gameState.gridSize;
 
         // Restore the grid size
-        expandGrid(gridSize - 5);
+        expandGrid(gridSize - 5, buildingCoordinates);
 
-        // Restore buildings
-        buildingCoordinates.forEach(({ row, col, type }) => {
-            const cellId = row * gridSize + col + 1;
-            const cell = document.getElementById(`cell${cellId}`);
-            if (cell) {
-                var img = document.createElement("img");
-                img.classList.add("gridImg");
-                img.src = "../images/" + type + ".png";
-                img.setAttribute('draggable', 'false');
-                cell.appendChild(img);
-                cell.setAttribute('data-building', type);
-            }
-        });
         updateTurnInfo();
         // Recalculate points
         calculatePoints();
@@ -497,3 +477,77 @@ function loadGame() {
         alert('Failed to load game');
     });
 }
+
+
+// function removeBuilding(cell, row, col) {
+//     // Remove the building visually
+//     cell.innerHTML = ''; // Clear the cell content
+//     cell.removeAttribute('data-building');
+
+//     // Remove from buildingCoordinates array
+//     buildingCoordinates = buildingCoordinates.filter(building => !(building.row === row && building.col === col));
+
+//     // Recalculate points or update any necessary state
+//     calculatePoints();
+// }
+
+
+function removeBuilding(cell, row, col) {
+    // Create the modal elements
+    const modalOverlay = document.createElement('div');
+    modalOverlay.classList.add('modal-overlay');
+
+    const modal = document.createElement('div');
+    modal.classList.add('demolishmodal');
+    modal.innerHTML = `
+        <div class="demolishmodal-content">
+            <p>Are you sure you want to delete this building?</p>
+            <button id="confirmDeleteBtn">Yes</button>
+            <button id="cancelDeleteBtn">No</button>
+        </div>
+    `;
+
+    // Append modal to the body
+    document.body.appendChild(modalOverlay);
+    document.body.appendChild(modal);
+
+    // Handle modal buttons
+    const confirmDeleteBtn = modal.querySelector('#confirmDeleteBtn');
+    const cancelDeleteBtn = modal.querySelector('#cancelDeleteBtn');
+
+    // Handle deletion confirmation
+    confirmDeleteBtn.addEventListener('click', () => {
+        // Remove the building visually
+        cell.innerHTML = ''; // Clear the cell content
+        cell.removeAttribute('data-building');
+
+        // Remove from buildingCoordinates array
+        buildingCoordinates = buildingCoordinates.filter(building => !(building.row === row && building.col === col));
+
+        // Recalculate points or update any necessary state
+        calculatePoints();
+
+        // Remove modal
+        document.body.removeChild(modalOverlay);
+        document.body.removeChild(modal);
+    });
+
+    // Handle cancellation
+    cancelDeleteBtn.addEventListener('click', () => {
+        // Remove modal
+        document.body.removeChild(modalOverlay);
+        document.body.removeChild(modal);
+    });
+
+    // Handle click outside modal to close
+    modalOverlay.addEventListener('click', () => {
+        document.body.removeChild(modalOverlay);
+        document.body.removeChild(modal);
+    });
+
+    // Prevent clicks from closing modal when clicking on modal itself
+    modal.addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
+}
+

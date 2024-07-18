@@ -228,3 +228,44 @@ body {
     margin-left:30px;
     margin-top:30px;
 }
+
+
+.demolishmodal {
+    position: fixed;
+    background-color: #262928;
+    border-radius: 10px;
+    padding: 50px; /* Increased padding for more space */
+    width: 300px; /* Increased width */
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+.demolishmodal-content {
+    text-align: center;
+}
+
+.demolishmodal-content p {
+    color: white;
+    font-size: 20px; /* Adjust font size as needed */
+    font-weight: bold;
+    margin-top: 0;
+}
+
+.demolishmodal-btn-container {
+    margin-top: 20px; /* Increased margin for button container */
+}
+
+.demolishmodal button {
+    margin: 0 10px; /* Increased button margin */
+    padding: 10px 20px; /* Increased button padding */
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #ffa31a;
+    border: none; /* Remove border to make it cleaner */
+    font-weight: bold;
+    font-size: 16px;
+    color: white;
+}
