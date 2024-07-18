@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const infoBtn = document.querySelector("#info-button");
 
     infoBtn.addEventListener("click", ()=>{
-        window.open("/html/about.html", '_blank');
+        window.open("../html/about.html", '_blank');
     })
 
     restartBtn.addEventListener("click", () =>{
@@ -194,7 +194,7 @@ async function loadGame(game) {
 class ArcadeGame {
     constructor() {
         this.gridSize = 20;
-        this.coins = 1;
+        this.coins = 16;
         this.points = 0;
         this.turn = 0;
         this.buildings = ['R', 'I', 'C', 'O', '*'];

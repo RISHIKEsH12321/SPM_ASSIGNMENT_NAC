@@ -1,16 +1,89 @@
 var grids = [];
 var points = 0
-var turn = 0;
+var turn = 0; 
 var buildingCoordinates = []; 
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    getGrids(25); // Initial 5x5 grid
-    displayRandomBuildings();
+    const gameState = JSON.parse(sessionStorage.getItem('gameState'));
+
+    if (gameState) {
+        points = gameState.points;
+        turn = gameState.turn;
+        buildingCoordinates = gameState.buildingCoordinates;
+        const gridSize = gameState.gridSize;
+
+        // Restore the grid size
+        expandGrid(gridSize - 5);
+
+        // Restore buildings
+        buildingCoordinates.forEach(({ row, col, type }) => {
+            const cellId = row * gridSize + col + 1;
+            const cell = document.getElementById(`cell${cellId}`);
+            if (cell) {
+                var img = document.createElement("img");
+                img.classList.add("gridImg");
+                img.src = "../images/" + type + ".png";
+                img.setAttribute('draggable', 'false');
+                cell.appendChild(img);
+                cell.setAttribute('data-building', type);
+            }
+        });
+        updateTurnInfo();
+        calculatePoints();
+
+        sessionStorage.removeItem('gameState');
+    } else {
+        getGrids(25); // Initial 5x5 grid
+        displayRandomBuildings();
+    }
 
     grids.forEach(grid => {
         grid.addEventListener('dragover', allowDrop);
         grid.addEventListener('drop', drop);
+    });
+
+    const saveModal = document.getElementById('saveModal');
+    const modalYesButton = document.getElementById('saveYesBtn');
+    const modalNoButton = document.getElementById('saveNoBtn');
+    const loadModal = document.getElementById('loadModal');
+    const loadyesbtn = document.getElementById('loadYesBtn');
+    const loadnobtn = document.getElementById('loadNoBtn');
+
+    document.getElementById('saveButton').addEventListener('click', () => {
+        saveModal.style.display = 'block';
+    });
+
+    modalYesButton.addEventListener('click', () => {
+        saveGame();
+        saveModal.style.display = 'none';
+    });
+
+    modalNoButton.addEventListener('click', () => {
+        saveModal.style.display = 'none';
+    });
+
+    document.getElementById('loadButton').addEventListener('click', () => {
+        loadModal.style.display = 'block';
+    });
+
+    loadyesbtn.addEventListener('click', () => {
+        loadGame();
+        loadModal.style.display = 'none';
+    });
+
+    loadnobtn.addEventListener('click', () => {
+        loadModal.style.display = 'none';
+    });
+
+
+    window.addEventListener('click', (event) => {
+        if (event.target == saveModal) {
+            saveModal.style.display = 'none';
+        }
+        else if (event.target == loadModal) {
+            loadModal.style.display = 'none'
+        }
     });
 });
 
@@ -333,4 +406,94 @@ function getAdjacentBuildings(cell) {
 
 function countAdjacentBuildings(cell, type) {
     return getAdjacentBuildings(cell).filter(buildingType => buildingType === type).length;
+}
+
+
+function saveGame() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const userid = currentUser._id;
+
+    const gameData = {
+        points: points,
+        turn: turn,
+        buildingCoordinates: buildingCoordinates,
+        gridSize: Math.sqrt(grids.length)
+    };
+
+    fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-apikey': '6667013f85f7f679ab63cd2a',
+            'cache-control': 'no-cache'
+        },
+        body: JSON.stringify({ 'freeplay-save': gameData }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Game saved:', data);
+        alert('Game saved successfully')
+    })
+    .catch(error => {
+        console.error('Error saving game:', error);
+    });
+}
+
+
+
+function loadGame() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const userid = currentUser._id;
+
+    fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-apikey': '6667013f85f7f679ab63cd2a',
+            'cache-control': 'no-cache'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to load game state');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Game state loaded:', data);
+        
+        // Restore game state
+        const gameState = data['freeplay-save']; // Access the correct property name here
+
+        points = gameState.points;
+        turn = gameState.turn;
+        buildingCoordinates = gameState.buildingCoordinates;
+        const gridSize = gameState.gridSize;
+
+        // Restore the grid size
+        expandGrid(gridSize - 5);
+
+        // Restore buildings
+        buildingCoordinates.forEach(({ row, col, type }) => {
+            const cellId = row * gridSize + col + 1;
+            const cell = document.getElementById(`cell${cellId}`);
+            if (cell) {
+                var img = document.createElement("img");
+                img.classList.add("gridImg");
+                img.src = "../images/" + type + ".png";
+                img.setAttribute('draggable', 'false');
+                cell.appendChild(img);
+                cell.setAttribute('data-building', type);
+            }
+        });
+        updateTurnInfo();
+        // Recalculate points
+        calculatePoints();
+        
+        alert('Game loaded successfully');
+    })
+    .catch(error => {
+        console.error('Error loading game state:', error);
+        alert('Failed to load game');
+    });
 }

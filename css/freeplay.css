@@ -82,3 +82,149 @@ body {
     width: 50px;
     height: 50px;
 }
+
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    gap: 10px;
+}
+
+
+#saveButton{
+    padding:8px;
+    width:100px;
+    border-radius:5px;
+    background-color: #ffa31a;
+    color:black;
+    font-size:16px;
+    cursor: pointer;
+}
+
+#loadButton{
+    padding:8px;
+    width:100px;
+    border-radius:5px;
+    background-color: rgb(104, 255, 104);
+    color:black;
+    font-size:16px;
+    cursor: pointer;
+}
+
+
+.savemodal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.savemodal-content {
+    background-color: #262928;
+    padding: 6rem;
+    border: 1px solid #80262928;
+    width: 80%;
+    margin: 10% 5%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: white; /* Text color */
+    position: absolute;
+    top: 30%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+}
+
+.savemodal-content p{
+    font-size: 20px;
+}
+
+#saveYesBtn{
+    padding:8px;
+    width:100px;
+    border-radius:5px;
+    background-color: rgb(104, 255, 104);
+    color:black;
+    font-size:16px;
+    cursor: pointer;
+}
+
+#saveNoBtn{
+    padding:8px;
+    width:100px;
+    border-radius:5px;
+    background-color: red;
+    color:black;
+    font-size:16px;
+    cursor: pointer;
+    margin-left:30px;
+    margin-top:30px;
+}
+
+
+.loadmodal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.loadmodal-content {
+    background-color: #262928;
+    padding: 6rem;
+    border: 1px solid #80262928;
+    width: 80%;
+    margin: 10% 5%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: white; /* Text color */
+    position: absolute;
+    top: 30%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+}
+
+.loadmodal-content p{
+    font-size: 20px;
+}
+
+#loadYesBtn{
+    padding:8px;
+    width:100px;
+    border-radius:5px;
+    background-color: rgb(104, 255, 104);
+    color:black;
+    font-size:16px;
+    cursor: pointer;
+}
+
+#loadNoBtn{
+    padding:8px;
+    width:100px;
+    border-radius:5px;
+    background-color: red;
+    color:black;
+    font-size:16px;
+    cursor: pointer;
+    margin-left:30px;
+    margin-top:30px;
+}
