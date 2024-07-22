@@ -541,6 +541,38 @@ class ArcadeGame {
             cell.removeEventListener('dragenter', this.dragEnter);
             cell.removeEventListener('drop', this.drop);
         });
+
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const userid = currentUser._id;
+
+        const gameState = {
+            gridSize: this.gridSize,
+            coins: this.coins,
+            points: this.points,
+            turn: this.turn,
+            grid: this.grid,
+            currentBuildings: this.currentBuildings,
+            selectedBuilding: this.selectedBuilding
+        };
+
+        fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-apikey': '6667013f85f7f679ab63cd2a',
+                'cache-control': 'no-cache'
+            },
+            body: JSON.stringify({ 'arcade-save': gameState, 'final-points': this.points }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to save final game state');
+            }
+            console.log('Final game state saved successfully');
+        })
+        .catch(error => {
+            console.error('Error saving final game state:', error);
+        });
     
         // Display game over modal
         const modal = document.getElementById("gameOverModal");
