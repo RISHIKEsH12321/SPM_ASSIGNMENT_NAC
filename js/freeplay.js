@@ -162,7 +162,7 @@ function expandGrid(currentGridSize) {
         }
     }
     
-    gridContainer.style.gridTemplateColumns = `repeat(${newGridSize}, 1fr)`;
+    gridContainer.style.gridTemplateColumns = `repeat(${newGridSize},  minmax(25px,1fr))`;
     getGrids(newGridSize * newGridSize);
 
     // Reassign buildings to their correct cells based on stored coordinates
