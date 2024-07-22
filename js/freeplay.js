@@ -1,16 +1,76 @@
 var grids = [];
 var points = 0
-var turn = 0;
+var turn = 0; 
 var buildingCoordinates = []; 
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    getGrids(25); // Initial 5x5 grid
-    displayRandomBuildings();
+    const gameState = JSON.parse(sessionStorage.getItem('gameState'));
+
+    if (gameState) {
+        points = gameState.points;
+        turn = gameState.turn;
+        buildingCoordinates = gameState.buildingCoordinates;
+        const gridSize = gameState.gridSize;
+
+        // Restore the grid size
+        expandGrid(gridSize - 5, buildingCoordinates);
+
+        updateTurnInfo();
+        calculatePoints();
+
+        sessionStorage.removeItem('gameState');
+    } else {
+        getGrids(25); // Initial 5x5 grid
+        displayRandomBuildings();
+    }
 
     grids.forEach(grid => {
         grid.addEventListener('dragover', allowDrop);
         grid.addEventListener('drop', drop);
+    });
+
+    const saveModal = document.getElementById('saveModal');
+    const modalYesButton = document.getElementById('saveYesBtn');
+    const modalNoButton = document.getElementById('saveNoBtn');
+    const loadModal = document.getElementById('loadModal');
+    const loadyesbtn = document.getElementById('loadYesBtn');
+    const loadnobtn = document.getElementById('loadNoBtn');
+
+    document.getElementById('saveButton').addEventListener('click', () => {
+        saveModal.style.display = 'block';
+    });
+
+    modalYesButton.addEventListener('click', () => {
+        saveGame();
+        saveModal.style.display = 'none';
+    });
+
+    modalNoButton.addEventListener('click', () => {
+        saveModal.style.display = 'none';
+    });
+
+    document.getElementById('loadButton').addEventListener('click', () => {
+        loadModal.style.display = 'block';
+    });
+
+    loadyesbtn.addEventListener('click', () => {
+        loadGame();
+        loadModal.style.display = 'none';
+    });
+
+    loadnobtn.addEventListener('click', () => {
+        loadModal.style.display = 'none';
+    });
+
+
+    window.addEventListener('click', (event) => {
+        if (event.target == saveModal) {
+            saveModal.style.display = 'none';
+        }
+        else if (event.target == loadModal) {
+            loadModal.style.display = 'none'
+        }
     });
 });
 
@@ -21,12 +81,6 @@ const buildings = [
     { type: 'Road', src: '../images/Road.png' },
     { type: 'Commercial', src: '../images/Commercial.png' }
 ];
-
-// function getGrids(gridNo) {
-//     for (let i = 0; i < gridNo; i++) {
-//         grids.push(document.getElementById("cell" + (i + 1)));
-//     }
-// }
 
 function getGrids(gridNo) {
     grids = []; // Clear existing grids array
@@ -39,17 +93,17 @@ function getGrids(gridNo) {
 function displayRandomBuildings() {
     const iconBar = document.getElementById('icon-bar');
     iconBar.innerHTML = ''; // Clear previous icons
-    // const randomBuildings = getRandomBuildings(2);
-    const randomBuildings = [
-        {
-            "type": "Commercial",
-            "src": "../images/Commercial.png"
-        },
-        {
-            "type": "Residential",
-            "src": "../images/Residential.png"
-        }
-    ]
+    const randomBuildings = getRandomBuildings(2);
+    // const randomBuildings = [
+    //     {
+    //         "type": "Road",
+    //         "src": "../images/Road.png"
+    //     },
+    //     {
+    //         "type": "Residential",
+    //         "src": "../images/Residential.png"
+    //     }
+    // ]
     randomBuildings.forEach(building => {
         const iconDiv = document.createElement('div');
         iconDiv.classList.add('icon');
@@ -80,26 +134,10 @@ function drag(event) {
     event.dataTransfer.setData("text", event.target.getAttribute('data-building'));
 }
 
-//Original
-// function drop(event) {
-//     event.preventDefault();
-//     const buildingType = event.dataTransfer.getData("text");
-//     const cell = event.target;
-//     if (cell.classList.contains('grid-cell')) {
-//         cell.setAttribute('data-building', buildingType); // Store the building type in the cell
-//         var img = document.createElement("img");
-//         img.classList.add("gridImg");
-//         img.src =  "../images/"+ buildingType +".png"; 
-//         img.setAttribute('draggable', 'false'); 
-//         cell.appendChild(img);
-//         endTurn();
-//     }
-// }
-
-// Wokring expand
 function drop(event) {
     event.preventDefault();
     const buildingType = event.dataTransfer.getData("text");
+    // console.log(buildingType)
     const cell = event.target;
 
     if (cell.classList.contains('grid-cell')) {
@@ -126,6 +164,12 @@ function drop(event) {
         if (gridSize * gridSize === numCells && isBorderCell(cell, gridSize) && numCells !== 625) {
             expandGrid(gridSize);
         }
+
+        cell.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            removeBuilding(cell, row, col);
+        });
+
         endTurn();
     }
 }
@@ -134,7 +178,6 @@ function isBorderCell(cell, gridSize) {
     const cellId = parseInt(cell.id.replace('cell', ''));
     const row = Math.floor((cellId - 1) / gridSize);
     const col = (cellId - 1) % gridSize;
-    console.log(true);
     return (row === 0 || row === gridSize - 1 || col === 0 || col === gridSize - 1);
 }
 
@@ -142,12 +185,10 @@ function isBorderCell(cell, gridSize) {
 function expandGrid(currentGridSize) {
     const gridContainer = document.getElementById('grid-container');
     const newGridSize = currentGridSize + 5;
-    
+
     // Clear existing cells to avoid duplication
-    while (gridContainer.firstChild) {
-        gridContainer.removeChild(gridContainer.firstChild);
-    }
-    
+    gridContainer.innerHTML = '';
+
     for (let i = 0; i < newGridSize; i++) {
         for (let j = 0; j < newGridSize; j++) {
             const cellId = i * newGridSize + j + 1;
@@ -155,103 +196,46 @@ function expandGrid(currentGridSize) {
             newCell.classList.add('grid-cell');
             newCell.id = `cell${cellId}`;
             gridContainer.appendChild(newCell);
-            
-            // Add event listeners to new grid cell
+
+            // Reattach event listeners to new grid cell
             newCell.addEventListener('dragover', allowDrop);
             newCell.addEventListener('drop', drop);
+            
+            // Check if there's a building at this cell and display it
+            const existingBuilding = buildingCoordinates.find(building => building.row === i && building.col === j);
+            if (existingBuilding) {
+                const img = document.createElement("img");
+                img.classList.add("gridImg");
+                img.src = "../images/" + existingBuilding.type + ".png";
+                img.setAttribute('draggable', 'false');
+                newCell.appendChild(img);
+                newCell.setAttribute('data-building', existingBuilding.type);
+                
+                // Reattach context menu listener for existing buildings
+                newCell.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    removeBuilding(newCell, i, j);
+                });
+            }
         }
     }
     
     gridContainer.style.gridTemplateColumns = `repeat(${newGridSize},  minmax(25px,1fr))`;
     getGrids(newGridSize * newGridSize);
 
-    // Reassign buildings to their correct cells based on stored coordinates
-    buildingCoordinates.forEach(({ row, col, type }) => {
-        const cellId = row * newGridSize + col + 1;
-        const cell = document.getElementById(`cell${cellId}`);
-        if (cell) {
-            var img = document.createElement("img");
-            img.classList.add("gridImg");
-            img.src = "../images/" + type + ".png";
-            img.setAttribute('draggable', 'false');
-            cell.appendChild(img);
-        }
-    });
+    calculatePoints();
 }
 
 
-// function drop(event) {
-//     event.preventDefault();
-//     const buildingType = event.dataTransfer.getData("text");
-//     const cell = event.target;
-
-//     if (cell.classList.contains('grid-cell')) {
-//         const cellId = parseInt(cell.id.replace('cell', ''));
-//         const numCells = document.querySelectorAll('.grid-cell').length;
-
-//         if (isOnBorder(cellId, numCells)) {
-//             expandGrid();
-//         }
-
-//         cell.setAttribute('data-building', buildingType); // Store the building type in the cell
-//         var img = document.createElement("img");
-//         img.classList.add("gridImg");
-//         img.src = `../images/${buildingType}.png`;
-//         img.setAttribute('draggable', 'false');
-//         cell.appendChild(img);
-//         endTurn();
-//     }
-// }
-
-// function isOnBorder(cellId, numCells) {
-//     const numRows = Math.ceil(Math.sqrt(numCells));
-//     const row = Math.floor((cellId - 1) / numRows);
-//     const col = (cellId - 1) % numRows;
-
-//     // Check if cell is on the border (last row or column)
-//     if (row === numRows - 1 || col === numRows - 1) {
-//         return true;
-//     }
-
-//     return false;
-// }
-
-// function expandGrid() {
-//     const gridContainer = document.getElementById('grid-container');
-//     const currentNumCells = gridContainer.querySelectorAll('.grid-cell').length;
-//     const newCells = 25; // Increase by another 5x5 grid
-
-//     for (let i = currentNumCells + 1; i <= currentNumCells + newCells; i++) {
-//         const newCell = document.createElement('div');
-//         newCell.classList.add('grid-cell');
-//         newCell.id = `cell${i}`;
-//         gridContainer.appendChild(newCell);
-
-//         // Add event listeners to new grid cell
-//         newCell.addEventListener('dragover', allowDrop);
-//         newCell.addEventListener('drop', drop);
-//     }
-
-//     // Calculate new number of columns and rows dynamically
-//     const numRows = Math.ceil(Math.sqrt(currentNumCells + newCells));
-//     const numColumns = Math.ceil((currentNumCells + newCells) / numRows);
-
-//     // Update CSS grid-template-columns and grid-auto-rows properties
-//     gridContainer.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
-//     gridContainer.style.gridTemplateRows = `repeat(${numRows}, 1fr)`;
-
-//     getGrids(currentNumCells + newCells); // Update grids array with new cells
-// }
-
-
 function startTurn() {
+    calculatePoints();
     turn++;
     displayRandomBuildings();
     updateTurnInfo();
 }
 
 function endTurn() {
-    calculatePoints();
+
     startTurn();
 }
 
@@ -262,7 +246,7 @@ function updateTurnInfo() {
 function calculatePoints() {
     let newPoints = 0;
     let industries = 0;
-
+    // console.log("calculatePoints");
     grids.forEach(grid => {
         const buildingType = grid.getAttribute('data-building');
         if (buildingType) {
@@ -325,70 +309,77 @@ function calculateParkPoints(cell) {
     return countAdjacentBuildings(cell, 'Park');
 }
 
-function calculateRoadPoints() {
+
+
+function calculateRoadPoints(grid) {
     let roadPoints = 0;
-
-    for (let row = 0; row < 5; row++) { // Assuming a 5x5 grid for initial implementation
-        let rowStart = row * 5;
-        let currentRow = [];
-
-        for (let col = 0; col < 5; col++) {
-            let currentIndex = rowStart + col;
-            currentRow.push(grids[currentIndex].getAttribute('data-building') === 'Road');
-        }
-        console.log("row: "+ row)
-        if (currentRow[0] && currentRow[1] && !currentRow[2] && !currentRow[3] && !currentRow[4]) {
-            roadPoints++;
-            console.log(1);
-        } else if (!currentRow[0] && currentRow[1] && currentRow[2] && !currentRow[3] && !currentRow[4]) {
-            roadPoints++;
-            console.log(2);
-        } else if (!currentRow[0] && !currentRow[1] && currentRow[2] && currentRow[3] && !currentRow[4]) {
-            roadPoints++;
-            console.log(3);
-        } else if (!currentRow[0] && !currentRow[1] && !currentRow[2] && currentRow[3] && currentRow[4]) {
-            roadPoints++;
-            console.log(4);
-        } else if (currentRow[0] && currentRow[1] && currentRow[2] && !currentRow[3] && !currentRow[4]) {
-            roadPoints += 2;
-            console.log(5);
-        } else if (!currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && !currentRow[4]) {
-            roadPoints += 2;
-            console.log(6);
-        } else if (!currentRow[0] && !currentRow[1] && currentRow[2] && currentRow[3] && currentRow[4]) {
-            roadPoints += 2;
-            console.log(7);
-        } else if (currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && !currentRow[4]) {
-            roadPoints += 3;
-            console.log(8);
-        } else if (!currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && currentRow[4]) {
-            roadPoints += 3;
-            console.log(9);
-        } else if (currentRow[0] && currentRow[1] && currentRow[2] && currentRow[3] && currentRow[4]) {
-            roadPoints += 4;
-            console.log(10);
-        }
+    const gridSize = Math.sqrt(grids.length); // Assuming grids is the array of grid elements
     
+    // Get the cell ID from the grid element
+    const cellId = grid.id.match(/\d+/)[0];
+    const gridNo = parseInt(cellId, 10);
+
+    // Calculate row and column number based on grid number
+    const row = Math.floor((gridNo - 1) / gridSize);
+    const col = (gridNo - 1) % gridSize;
+    // console.log(`gridSize: ${gridSize}\nRow: ${row}\nCol: ${col} `);
+    if (grid.getAttribute('data-building') === 'Road') {
+        // Check right and left
+        let roadLength = 1;
+
+        // Check right
+        for (let i = col + 1; i < gridSize; i++) {
+            let rightIndex = row * gridSize + i;
+            // console.log(rightIndex)
+            if (grids[rightIndex].getAttribute('data-building') === 'Road') {
+                roadLength++;
+            } else {
+                break;
+            }
+        }
+
+        // Check left
+        for (let i = col - 1; i >= 0; i--) {
+            let leftIndex = row * gridSize + i;
+            if (grids[leftIndex].getAttribute('data-building') === 'Road') {
+                roadLength++;
+            } else {
+                break;
+            }
+        }
+
+        // Add points based on road length
+        roadPoints += roadLength - 1;
     }
 
     return roadPoints;
 }
 
+function checkRoadConfiguration(currentRow, pattern) {
+    const gridSize = currentRow.length;
 
+    for (let i = 0; i < gridSize; i++) {
+        if (currentRow[i] !== pattern[i]) {
+            return false;
+        }
+    }
 
+    return true;
+}
 
 function getAdjacentBuildings(cell) {
     const cellId = cell.id.match(/\d+/)[0];
     const gridNo = parseInt(cellId, 10);
+    const gridSize = Math.sqrt(grids.length); // Assuming grids is the array of grid elements
 
-    // Calculate row and column number based on grid number (assuming a 5x5 grid)
-    const row = Math.floor((gridNo - 1) / 5);
-    const col = (gridNo - 1) % 5;
+    // Calculate row and column number based on grid number
+    const row = Math.floor((gridNo - 1) / gridSize);
+    const col = (gridNo - 1) % gridSize;
 
     const adjacentCells = [];
 
     // Check the right cell
-    if (col < 4) {
+    if (col < gridSize - 1) {
         adjacentCells.push(document.getElementById(`cell${gridNo + 1}`));
     }
     // Check the left cell
@@ -397,19 +388,166 @@ function getAdjacentBuildings(cell) {
     }
     // Check the cell above
     if (row > 0) {
-        adjacentCells.push(document.getElementById(`cell${gridNo - 5}`));
+        adjacentCells.push(document.getElementById(`cell${gridNo - gridSize}`));
     }
     // Check the cell below
-    if (row < 4) {
-        adjacentCells.push(document.getElementById(`cell${gridNo + 5}`));
+    if (row < gridSize - 1) {
+        adjacentCells.push(document.getElementById(`cell${gridNo + gridSize}`));
     }
-
     return adjacentCells
         .filter(adjCell => adjCell && adjCell.getAttribute('data-building'))
         .map(adjCell => adjCell.getAttribute('data-building'));
 }
 
-
 function countAdjacentBuildings(cell, type) {
     return getAdjacentBuildings(cell).filter(buildingType => buildingType === type).length;
 }
+
+
+function saveGame() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const userid = currentUser._id;
+
+    const gameData = {
+        points: points,
+        turn: turn,
+        buildingCoordinates: buildingCoordinates,
+        gridSize: Math.sqrt(grids.length)
+    };
+
+    fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-apikey': '6667013f85f7f679ab63cd2a',
+            'cache-control': 'no-cache'
+        },
+        body: JSON.stringify({ 'freeplay-save': gameData }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Game saved:', data);
+        alert('Game saved successfully')
+    })
+    .catch(error => {
+        console.error('Error saving game:', error);
+    });
+}
+
+function loadGame() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const userid = currentUser._id;
+
+    fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-apikey': '6667013f85f7f679ab63cd2a',
+            'cache-control': 'no-cache'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to load game state');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Game state loaded:', data);
+        
+        // Restore game state
+        const gameState = data['freeplay-save']; // Access the correct property name here
+
+        points = gameState.points;
+        turn = gameState.turn;
+        buildingCoordinates = gameState.buildingCoordinates;
+        const gridSize = gameState.gridSize;
+
+        // Restore the grid size
+        expandGrid(gridSize - 5, buildingCoordinates);
+
+        updateTurnInfo();
+        // Recalculate points
+        calculatePoints();
+        
+        alert('Game loaded successfully');
+    })
+    .catch(error => {
+        console.error('Error loading game state:', error);
+        alert('Failed to load game');
+    });
+}
+
+
+// function removeBuilding(cell, row, col) {
+//     // Remove the building visually
+//     cell.innerHTML = ''; // Clear the cell content
+//     cell.removeAttribute('data-building');
+
+//     // Remove from buildingCoordinates array
+//     buildingCoordinates = buildingCoordinates.filter(building => !(building.row === row && building.col === col));
+
+//     // Recalculate points or update any necessary state
+//     calculatePoints();
+// }
+
+
+function removeBuilding(cell, row, col) {
+    // Create the modal elements
+    const modalOverlay = document.createElement('div');
+    modalOverlay.classList.add('modal-overlay');
+
+    const modal = document.createElement('div');
+    modal.classList.add('demolishmodal');
+    modal.innerHTML = `
+        <div class="demolishmodal-content">
+            <p>Are you sure you want to delete this building?</p>
+            <button id="confirmDeleteBtn">Yes</button>
+            <button id="cancelDeleteBtn">No</button>
+        </div>
+    `;
+
+    // Append modal to the body
+    document.body.appendChild(modalOverlay);
+    document.body.appendChild(modal);
+
+    // Handle modal buttons
+    const confirmDeleteBtn = modal.querySelector('#confirmDeleteBtn');
+    const cancelDeleteBtn = modal.querySelector('#cancelDeleteBtn');
+
+    // Handle deletion confirmation
+    confirmDeleteBtn.addEventListener('click', () => {
+        // Remove the building visually
+        cell.innerHTML = ''; // Clear the cell content
+        cell.removeAttribute('data-building');
+
+        // Remove from buildingCoordinates array
+        buildingCoordinates = buildingCoordinates.filter(building => !(building.row === row && building.col === col));
+
+        // Recalculate points or update any necessary state
+        calculatePoints();
+
+        // Remove modal
+        document.body.removeChild(modalOverlay);
+        document.body.removeChild(modal);
+    });
+
+    // Handle cancellation
+    cancelDeleteBtn.addEventListener('click', () => {
+        // Remove modal
+        document.body.removeChild(modalOverlay);
+        document.body.removeChild(modal);
+    });
+
+    // Handle click outside modal to close
+    modalOverlay.addEventListener('click', () => {
+        document.body.removeChild(modalOverlay);
+        document.body.removeChild(modal);
+    });
+
+    // Prevent clicks from closing modal when clicking on modal itself
+    modal.addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
+}
+
