@@ -8,8 +8,8 @@
 </head>
 <body>
     <div class="container">
-        <button class="cross-button">&times;</button>
-        <button class="info-button">i</button>
+        <button id="quit-game" class="cross-button">&times;</button>
+        <button id="info-button" class="info-button">i</button>
         <div class="header-info">
             <div class="info-box" id = points>Points: </div>
             <div class="info-box" id = "turn">Turn 0</div>
@@ -70,6 +70,15 @@
             <p>Do you want to load the saved game?</p>
             <button id="loadYesBtn">Yes</button>
             <button id="loadNoBtn">No</button>
+        </div>
+    </div>
+
+    <div id="quitModal" class="quitmodal">
+        <div class="quitmodal-content">
+            <p>Do you want to save the current game before quitting?</p>
+            <button id="quitSaveYesBtn">Yes</button>
+            <button id="quitSaveNoBtn">No</button>
+            <button id="quitCancelBtn">Cancel</button>
         </div>
     </div>
 

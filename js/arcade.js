@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById("gameOverModal");
     const restartBtn = modal.querySelector("#restartBtn");
     const menuBtn = modal.querySelector("#menuBtn");
-    const quitGame = document.querySelector("#quit-game");
+    const quitBtn = document.querySelector("#quit-game");
     const infoBtn = document.querySelector("#info-button");
 
     infoBtn.addEventListener("click", ()=>{
@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadBtn = document.getElementById("loadBtn");
     loadBtn.addEventListener("click", () => loadGame(game));
+
+    quitBtn.addEventListener("click", () => showQuitModal(game));
 });
 
 
@@ -48,70 +50,75 @@ async function saveGame(game) {
         selectedBuilding: game.selectedBuilding
     };
 
-    fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-apikey': '6667013f85f7f679ab63cd2a',
-            'cache-control': 'no-cache'
-        }
-    })
-    .then(response => {
+    try {
+        const response = await fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-apikey': '6667013f85f7f679ab63cd2a',
+                'cache-control': 'no-cache'
+            }
+        });
+
         if (!response.ok) {
             throw new Error('Failed to load game state');
         }
-        return response.json();
-    })
-    .then(data => {
+
+        const data = await response.json();
         const existingGameState = data['arcade-save'];
 
         if (existingGameState) {
-            const saveModal = document.getElementById('saveModal');
-            saveModal.style.display = 'block';
+            return new Promise((resolve) => {
+                const saveModal = document.getElementById('saveModal');
+                saveModal.style.display = 'block';
 
-            const saveYesBtn = document.getElementById('saveYesBtn');
-            const saveNoBtn = document.getElementById('saveNoBtn');
+                const saveYesBtn = document.getElementById('saveYesBtn');
+                const saveNoBtn = document.getElementById('saveNoBtn');
 
-            saveYesBtn.addEventListener('click', () => {
-                saveModal.style.display = 'none';
-                saveGameState(gameState, userid);
+                saveYesBtn.addEventListener('click', async () => {
+                    saveModal.style.display = 'none';
+                    const result = await saveGameState(gameState, userid);
+                    resolve(result);
+                });
+
+                saveNoBtn.addEventListener('click', () => {
+                    saveModal.style.display = 'none';
+                    resolve(false);
+                });
             });
-
-            saveNoBtn.addEventListener('click', () => {
-                saveModal.style.display = 'none';
-            });
-
-            return;
         }
 
-        saveGameState(gameState, userid);
-    })
-    .catch(error => {
+        return await saveGameState(gameState, userid);
+    } catch (error) {
         console.error('Error loading game state:', error);
-    });
+        return false;
+    }
 }
 
 // Save game
 async function saveGameState(gameState, userid) {
-    fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-apikey': '6667013f85f7f679ab63cd2a',
-            'cache-control': 'no-cache'
-        },
-        body: JSON.stringify({ 'arcade-save': gameState }),
-    })
-    .then(response => {
+    try {
+        const response = await fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-apikey': '6667013f85f7f679ab63cd2a',
+                'cache-control': 'no-cache'
+            },
+            body: JSON.stringify({ 'arcade-save': gameState }),
+        });
+
         if (!response.ok) {
             throw new Error('Failed to save game state');
         }
+
         console.log('Game state saved successfully');
-        alert('Game saved successfully')
-    })
-    .catch(error => {
+        alert('Game saved successfully');
+        return true;
+    } catch (error) {
         console.error('Error saving game state:', error);
-    });
+        return false;
+    }
 }
 
 
@@ -189,6 +196,40 @@ async function loadGame(game) {
     newLoadNoBtn.addEventListener('click', () => {
         loadModal.style.display = 'none';
     });
+}
+
+function showQuitModal(game) {
+    const quitModal = document.getElementById('quitModal');
+    quitModal.style.display = 'block';
+
+    const quitSaveYesBtn = document.getElementById('quitSaveYesBtn');
+    const quitSaveNoBtn = document.getElementById('quitSaveNoBtn');
+    const quitCancelBtn = document.getElementById('quitCancelBtn');
+
+    quitSaveYesBtn.addEventListener('click', async () => {
+        quitModal.style.display = 'none';
+        const gameSaved = await saveGame(game);
+        if (gameSaved){
+            quitGame();
+        } else{
+            console.error('Failed to save data:', error);
+            alert("Failed to save game");
+        }
+    });
+
+    quitSaveNoBtn.addEventListener('click', () => {
+        quitModal.style.display = 'none';
+        quitGame();
+    });
+
+    quitCancelBtn.addEventListener('click', () => {
+        quitModal.style.display = 'none';
+    });
+}
+
+function quitGame() {
+    console.log('Quitting game...');
+    window.location.href = "../index.html";
 }
 
 class ArcadeGame {

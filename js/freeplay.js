@@ -36,6 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadModal = document.getElementById('loadModal');
     const loadyesbtn = document.getElementById('loadYesBtn');
     const loadnobtn = document.getElementById('loadNoBtn');
+    const infoBtn = document.querySelector("#info-button");
+
+    infoBtn.addEventListener("click", ()=>{
+        window.open("../html/about.html", '_blank');
+    })
 
     document.getElementById('saveButton').addEventListener('click', () => {
         saveModal.style.display = 'block';
@@ -70,6 +75,45 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         else if (event.target == loadModal) {
             loadModal.style.display = 'none'
+        }
+    });
+
+    // Show the quit modal when the user tries to quit the game
+    document.getElementById('quit-game').addEventListener('click', () => {
+        quitModal.style.display = 'block';
+    });
+
+    // Handle save before quit
+    quitSaveYesBtn.addEventListener('click', async() => {
+        try {
+            quitModal.style.display = 'none';
+            const gameSaved = await saveGame();
+            console.log(gameSaved);
+            if (gameSaved){
+                quitGame();
+            }
+        } catch (error) {
+            console.error('Failed to save data:', error);
+            alert("Failed to save game");
+        }
+    });
+
+    // Handle quit without saving
+    quitSaveNoBtn.addEventListener('click', () => {
+        quitModal.style.display = 'none';
+        // Call your quit game function here
+        quitGame();
+    });
+
+    // Handle cancel quit
+    quitCancelBtn.addEventListener('click', () => {
+        quitModal.style.display = 'none';
+    });
+
+    // Close the modal if the user clicks outside of it
+    window.addEventListener('click', (event) => {
+        if (event.target === quitModal) {
+            quitModal.style.display = 'none';
         }
     });
 });
@@ -108,6 +152,7 @@ function displayRandomBuildings() {
         const iconDiv = document.createElement('div');
         iconDiv.classList.add('icon');
         const buildingType = document.createElement('p');
+        buildingType.style.textAlign="center";
         buildingType.textContent = building.type;
         const img = document.createElement('img');
         img.src = building.src;
@@ -404,7 +449,7 @@ function countAdjacentBuildings(cell, type) {
 }
 
 
-function saveGame() {
+async function saveGame() {
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     const userid = currentUser._id;
 
@@ -415,23 +460,32 @@ function saveGame() {
         gridSize: Math.sqrt(grids.length)
     };
 
-    fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-apikey': '6667013f85f7f679ab63cd2a',
-            'cache-control': 'no-cache'
-        },
-        body: JSON.stringify({ 'freeplay-save': gameData }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Game saved:', data);
-        alert('Game saved successfully')
-    })
-    .catch(error => {
+    try {
+        const response = await fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-apikey': '6667013f85f7f679ab63cd2a',
+                'cache-control': 'no-cache'
+            },
+            body: JSON.stringify({ 'freeplay-save': gameData }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Game saved:', data);
+            alert('Game saved successfully');
+            return true;
+        } else {
+            console.error('Failed to save game: Network response was not ok.');
+            alert('Failed to save game');
+            return false;
+        }
+    } catch (error) {
         console.error('Error saving game:', error);
-    });
+        alert('Failed to save game');
+        return false;
+    }
 }
 
 function loadGame() {
@@ -476,6 +530,12 @@ function loadGame() {
         console.error('Error loading game state:', error);
         alert('Failed to load game');
     });
+}
+
+function quitGame() {
+    console.log('Quitting game...');
+    // Implement your actual quit game logic here
+    window.location.href = "../index.html";
 }
 
 
