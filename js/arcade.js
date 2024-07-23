@@ -121,8 +121,33 @@ async function saveGameState(gameState, userid) {
     }
 }
 
+async function updateGamesCompleted(){
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const userId = currentUser._id
+    const arcadeGamesCompleted = parseInt(currentUser['arcade-games-completed']) + 1;
 
+    try {
+        const response = await fetch(`https://spmassignment-a329.restdb.io/rest/player/${userId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-apikey': '6667013f85f7f679ab63cd2a',
+                'cache-control': 'no-cache'
+            },
+            body: JSON.stringify({ 'arcade-games-completed': arcadeGamesCompleted }),
+        });
 
+        if (!response.ok) {
+            throw new Error('Failed to update arcade games completed');
+        }
+
+        console.log('Update arcade games completed successfully');
+        return true;
+    } catch (error) {
+        console.error('Error updating arcade games completed:', error);
+        return false;
+    }
+}
 
 // Loading of game
 async function loadGame(game) {
@@ -266,7 +291,7 @@ class ArcadeGame {
         this.addEventListeners();
     }
 
-    startNewGame() {
+    async startNewGame() {
         this.updateHeaderInfo();
         this.selectRandomBuildings();
         this.renderCurrentBuildings();
@@ -585,6 +610,7 @@ class ArcadeGame {
 
         const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         const userid = currentUser._id;
+        const arcadeGamesCompleted = parseInt(currentUser['arcade-games-completed']) + 1;
 
         const gameState = {
             gridSize: this.gridSize,
@@ -603,13 +629,14 @@ class ArcadeGame {
                 'x-apikey': '6667013f85f7f679ab63cd2a',
                 'cache-control': 'no-cache'
             },
-            body: JSON.stringify({ 'arcade-save': gameState, 'final-points': this.points }),
+            body: JSON.stringify({ 'arcade-save': gameState, 'final-points': this.points, 'arcade-games-completed': arcadeGamesCompleted  }),
         })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to save final game state');
             }
             console.log('Final game state saved successfully');
+            currentUser['arcade-games-completed'] = arcadeGamesCompleted;
         })
         .catch(error => {
             console.error('Error saving final game state:', error);

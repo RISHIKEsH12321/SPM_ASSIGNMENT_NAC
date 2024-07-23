@@ -452,6 +452,7 @@ function countAdjacentBuildings(cell, type) {
 async function saveGame() {
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     const userid = currentUser._id;
+    const freePlayGamesCompleted = parseInt(currentUser['free-play-games-completed']) + 1;
 
     const gameData = {
         points: points,
@@ -468,12 +469,13 @@ async function saveGame() {
                 'x-apikey': '6667013f85f7f679ab63cd2a',
                 'cache-control': 'no-cache'
             },
-            body: JSON.stringify({ 'freeplay-save': gameData }),
+            body: JSON.stringify({ 'freeplay-save': gameData, 'free-play-games-completed': freePlayGamesCompleted }),
         });
 
         if (response.ok) {
             const data = await response.json();
             console.log('Game saved:', data);
+            currentUser['free-play-games-completed'] = freePlayGamesCompleted;
             alert('Game saved successfully');
             return true;
         } else {
