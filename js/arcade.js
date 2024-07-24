@@ -121,33 +121,33 @@ async function saveGameState(gameState, userid) {
     }
 }
 
-async function updateGamesCompleted(){
-    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-    const userId = currentUser._id
-    const arcadeGamesCompleted = parseInt(currentUser['arcade-games-completed']) + 1;
+// async function updateGamesCompleted(){
+//     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+//     const userId = currentUser._id
+//     const arcadeGamesCompleted = parseInt(currentUser['arcade-games-completed']) + 1;
 
-    try {
-        const response = await fetch(`https://spmassignment-a329.restdb.io/rest/player/${userId}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-apikey': '6667013f85f7f679ab63cd2a',
-                'cache-control': 'no-cache'
-            },
-            body: JSON.stringify({ 'arcade-games-completed': arcadeGamesCompleted }),
-        });
+//     try {
+//         const response = await fetch(`https://spmassignment-a329.restdb.io/rest/player/${userId}`, {
+//             method: 'PATCH',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'x-apikey': '6667013f85f7f679ab63cd2a',
+//                 'cache-control': 'no-cache'
+//             },
+//             body: JSON.stringify({ 'arcade-games-completed': arcadeGamesCompleted }),
+//         });
 
-        if (!response.ok) {
-            throw new Error('Failed to update arcade games completed');
-        }
+//         if (!response.ok) {
+//             throw new Error('Failed to update arcade games completed');
+//         }
 
-        console.log('Update arcade games completed successfully');
-        return true;
-    } catch (error) {
-        console.error('Error updating arcade games completed:', error);
-        return false;
-    }
-}
+//         console.log('Update arcade games completed successfully');
+//         return true;
+//     } catch (error) {
+//         console.error('Error updating arcade games completed:', error);
+//         return false;
+//     }
+// }
 
 // Loading of game
 async function loadGame(game) {
@@ -529,12 +529,12 @@ class ArcadeGame {
                         break;
                     case 'I':
                         newPoints += 1; // Scores 1 point per industry in the city
-                        newCoins += 2; // Generates 2 coins per turn
+                        newCoins += 1; // Generates 2 coins per turn
                         newCoins += adjacentBuildings['R']; // Generates 1 coin per adjacent residential
                         break;
                     case 'C':
                         newPoints += adjacentBuildings['C']; // Scores 1 point per adjacent commercial
-                        newCoins += 3; // Generates 3 coins per turn
+                        newCoins += 1; // Generates 3 coins per turn
                         newCoins += adjacentBuildings['R']; // Generates 1 coin per adjacent residential
                         break;
                     case 'O':
