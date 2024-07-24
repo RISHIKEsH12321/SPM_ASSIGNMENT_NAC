@@ -585,6 +585,9 @@ class ArcadeGame {
         console.log(currentUser['arcade-games-completed']);
         const arcadeGamesCompleted = parseInt(currentUser['arcade-games-completed']) + 1;
         console.log(arcadeGamesCompleted);
+        if (this.points > currentUser['arcade-play-score']){
+            currentUser['arcade-play-score'] = parseInt(this.points);
+        }
 
         const gameState = {
             gridSize: this.gridSize,
@@ -603,7 +606,7 @@ class ArcadeGame {
                 'x-apikey': '6667013f85f7f679ab63cd2a',
                 'cache-control': 'no-cache'
             },
-            body: JSON.stringify({ 'arcade-save': gameState, 'final-points': this.points, 'arcade-games-completed': arcadeGamesCompleted  }),
+            body: JSON.stringify({ 'arcade-save': gameState, 'final-points': this.points, 'arcade-games-completed': arcadeGamesCompleted, 'arcade-play-score': this.points  }),
         })
         .then(response => {
             if (!response.ok) {
