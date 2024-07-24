@@ -99,10 +99,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Handle quit without saving
-    quitSaveNoBtn.addEventListener('click', () => {
-        quitModal.style.display = 'none';
-        // Call your quit game function here
-        quitGame();
+    quitSaveNoBtn.addEventListener('click', async() => {
+        try {
+            quitModal.style.display = 'none';
+            const gameUpdated = await updateGamesCompleted();
+            console.log(gameUpdated);
+            if (gameUpdated){
+                quitGame();
+            }
+        } catch (error) {
+            console.error('Failed to save data:', error);
+            alert("Failed to update number of free play games completed");
+        }
     });
 
     // Handle cancel quit
@@ -476,6 +484,7 @@ async function saveGame() {
             const data = await response.json();
             console.log('Game saved:', data);
             currentUser['free-play-games-completed'] = freePlayGamesCompleted;
+            sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
             alert('Game saved successfully');
             return true;
         } else {
@@ -486,6 +495,35 @@ async function saveGame() {
     } catch (error) {
         console.error('Error saving game:', error);
         alert('Failed to save game');
+        return false;
+    }
+}
+
+async function updateGamesCompleted(){
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const userId = currentUser._id
+    const freePlayGamesCompleted = parseInt(currentUser['free-play-games-completed']) + 1;
+
+    try {
+        const response = await fetch(`https://spmassignment-a329.restdb.io/rest/player/${userId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-apikey': '6667013f85f7f679ab63cd2a',
+                'cache-control': 'no-cache'
+            },
+            body: JSON.stringify({ 'free-play-games-completed': freePlayGamesCompleted }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update arcade games completed');
+        }
+        currentUser['free-play-games-completed'] = freePlayGamesCompleted;
+        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+        console.log('Update arcade games completed successfully');
+        return true;
+    } catch (error) {
+        console.error('Error updating arcade games completed:', error);
         return false;
     }
 }
