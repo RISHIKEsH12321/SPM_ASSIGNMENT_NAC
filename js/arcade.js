@@ -610,7 +610,9 @@ class ArcadeGame {
 
         const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         const userid = currentUser._id;
+        console.log(currentUser['arcade-games-completed']);
         const arcadeGamesCompleted = parseInt(currentUser['arcade-games-completed']) + 1;
+        console.log(arcadeGamesCompleted);
 
         const gameState = {
             gridSize: this.gridSize,
@@ -637,6 +639,7 @@ class ArcadeGame {
             }
             console.log('Final game state saved successfully');
             currentUser['arcade-games-completed'] = arcadeGamesCompleted;
+            sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
         })
         .catch(error => {
             console.error('Error saving final game state:', error);
