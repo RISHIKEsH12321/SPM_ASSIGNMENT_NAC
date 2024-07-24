@@ -61,8 +61,11 @@ body {
     border-radius: 8px;
     margin-bottom: 10px;
     overflow: hidden;
+    transition: all 0.2s ease-in-out;
 }
-
+.rank-container:hover {
+    transform: scale(1.05);
+}
 .header {
     /* background-color: #444; */
     font-weight: bold;
