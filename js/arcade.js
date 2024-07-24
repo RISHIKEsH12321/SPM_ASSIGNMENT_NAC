@@ -205,7 +205,17 @@ function showQuitModal(game) {
 
     quitSaveYesBtn.addEventListener('click', async () => {
         quitModal.style.display = 'none';
-        const gameSaved = await saveGame(game);
+        const gameState = {
+            gridSize: game.gridSize,
+            coins: game.coins,
+            points: game.points,
+            turn: game.turn,
+            grid: game.grid,
+            currentBuildings: game.currentBuildings,
+            selectedBuilding: game.selectedBuilding
+        };
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const gameSaved = await saveGameState(gameState, currentUser._id);
         if (gameSaved){
             quitGame();
         } else{
@@ -585,9 +595,12 @@ class ArcadeGame {
         console.log(currentUser['arcade-games-completed']);
         const arcadeGamesCompleted = parseInt(currentUser['arcade-games-completed']) + 1;
         console.log(arcadeGamesCompleted);
-        if (this.points > currentUser['arcade-play-score']){
-            currentUser['arcade-play-score'] = parseInt(this.points);
+        console.log(currentUser['arcade-score']);
+        if (this.points > currentUser['arcade-score']){
+            currentUser['arcade-score'] = parseInt(this.points);
+            console.log('arcade-score updated');
         }
+        console.log(currentUser['arcade-score']);
 
         const gameState = {
             gridSize: this.gridSize,
