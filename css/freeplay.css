@@ -330,3 +330,60 @@ body {
     font-size: 16px;
     color: white;
 }
+
+
+#gameOverModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #262928;
+    padding: 6rem;
+    border: 1px solid #80262928;
+    width: 80%;
+    margin: 10% 5%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: white; /* Text color */
+    position: absolute;
+    top: 30%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+}
+
+.quitmodal-content p {
+    font-size: 20px;
+}
+
+#restartBtn, #menuBtn{
+    padding: 8px;
+    width: 100px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+#restartBtn {
+    background-color: rgb(104, 255, 104);
+    color: black;
+}
+
+
+#menuBtn {
+    background-color: #ffa31a;
+    color: black;
+}

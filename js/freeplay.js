@@ -2,7 +2,21 @@ var grids = [];
 var points = 0
 var turn = 0; 
 var buildingCoordinates = []; 
+var coinNetGain = 0;
+var consecutiveLoss = 0;
+const modal = document.getElementById("gameOverModal");
+const restartBtn = modal.querySelector("#restartBtn");
+const menuBtn = modal.querySelector("#menuBtn");
 
+restartBtn.addEventListener("click", () =>{
+    window.location.reload();
+    modal.style.display="none";
+});
+
+menuBtn.addEventListener("click", () =>{
+    modal.style.display="none";
+    window.location.href="../index.html"
+})
 
 document.addEventListener("DOMContentLoaded", () => {
     const gameState = JSON.parse(sessionStorage.getItem('gameState'));
@@ -145,17 +159,17 @@ function getGrids(gridNo) {
 function displayRandomBuildings() {
     const iconBar = document.getElementById('icon-bar');
     iconBar.innerHTML = ''; // Clear previous icons
-    const randomBuildings = getRandomBuildings(2);
-    // const randomBuildings = [
-    //     {
-    //         "type": "Road",
-    //         "src": "../images/Road.png"
-    //     },
-    //     {
-    //         "type": "Residential",
-    //         "src": "../images/Residential.png"
-    //     }
-    // ]
+    // const randomBuildings = getRandomBuildings(2);
+    const randomBuildings = [
+        {
+            "type": "Park",
+            "src": "../images/Park.png"
+        },
+        {
+            "type": "Residential",
+            "src": "../images/Residential.png"
+        }
+    ]
     randomBuildings.forEach(building => {
         const iconDiv = document.createElement('div');
         iconDiv.classList.add('icon');
@@ -282,13 +296,20 @@ function expandGrid(currentGridSize) {
 
 function startTurn() {
     calculatePoints();
+    console.log(calculateCoinNet());
     turn++;
     displayRandomBuildings();
     updateTurnInfo();
 }
 
 function endTurn() {
-
+    if (consecutiveLoss >= 5){
+        console.log("Game Over")
+        gameOver();
+    }
+    if (calculateCoinNet() < 0){
+        consecutiveLoss+=1;
+    }
     startTurn();
 }
 
@@ -362,8 +383,6 @@ function calculateParkPoints(cell) {
     return countAdjacentBuildings(cell, 'Park');
 }
 
-
-
 function calculateRoadPoints(grid) {
     let roadPoints = 0;
     const gridSize = Math.sqrt(grids.length); // Assuming grids is the array of grid elements
@@ -419,6 +438,101 @@ function checkRoadConfiguration(currentRow, pattern) {
 
     return true;
 }
+
+function calculateCoinNet() {
+    let totalProfit = 0;
+    let totalUpkeep = 0;
+
+    // Initialize data structures for tracking residential clusters
+    const visited = new Set();
+
+    // Helper function to perform BFS for finding clusters of residential buildings
+    function bfsCluster(row, col) {
+        const queue = [[row, col]];
+        const cluster = [];
+        visited.add(`${row}-${col}`);
+        
+        while (queue.length > 0) {
+            const [r, c] = queue.shift();
+            cluster.push([r, c]);
+
+            // Check adjacent cells
+            [[0, 1], [1, 0], [0, -1], [-1, 0]].forEach(([dr, dc]) => {
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < Math.sqrt(grids.length) &&
+                    nc >= 0 && nc < Math.sqrt(grids.length)) {
+                    const cell = document.getElementById(`cell${nr * Math.sqrt(grids.length) + nc + 1}`);
+                    if (cell && cell.getAttribute('data-building') === 'Residential' &&
+                        !visited.has(`${nr}-${nc}`)) {
+                        visited.add(`${nr}-${nc}`);
+                        queue.push([nr, nc]);
+                    }
+                }
+            });
+        }
+        return cluster;
+    }
+
+    // Calculate profits and upkeeps
+    grids.forEach(grid => {
+        const buildingType = grid.getAttribute('data-building');
+        if (buildingType) {
+            const cellId = grid.id.match(/\d+/)[0];
+            const gridSize = Math.sqrt(grids.length);
+            const row = Math.floor((cellId - 1) / gridSize);
+            const col = (cellId - 1) % gridSize;
+            switch (buildingType) {                
+                case 'Residential':
+                    totalProfit += 1; // 1 coin per Residential building
+                    // Check if it's part of an unvisited cluster
+
+                    if (!visited.has(`${row}-${col}`)) {
+                        const cluster = bfsCluster(row, col);
+                        totalUpkeep += 1; // 1 coin upkeep per Residential cluster
+                    }
+                    break;
+                case 'Industrial':
+                    totalProfit += 2; // 2 coins per Industry
+                    totalUpkeep += 1; // 1 coin upkeep per Industry
+                    break;
+                case 'Commercial':
+                    totalProfit += 3; // 3 coins per Commercial
+                    totalUpkeep += 2; // 2 coins upkeep per Commercial
+                    break;
+                case 'Park':
+                    totalUpkeep += 1; // 1 coin upkeep per Park
+                    break;
+                case 'Road':
+                    // Count unconnected road segments
+                    
+
+                    let isConnected = false;
+                    [[0, 1], [1, 0], [0, -1], [-1, 0]].forEach(([dr, dc]) => {
+                        const nr = row + dr;
+                        const nc = col + dc;
+                        if (nr >= 0 && nr < gridSize &&
+                            nc >= 0 && nc < gridSize) {
+                            const neighbor = document.getElementById(`cell${nr * gridSize + nc + 1}`);
+                            if (neighbor && neighbor.getAttribute('data-building') === 'Road') {
+                                isConnected = true;
+                            }
+                        }
+                    });
+
+                    if (!isConnected) {
+                        totalUpkeep += 1; // 1 coin upkeep per unconnected Road segment
+                    }
+                    break;
+            }
+        }
+    });
+
+    const coinNet = totalProfit - totalUpkeep;
+    document.querySelector('.header-info .info-box:last-child').textContent = `Net Coins: ${coinNet} (${consecutiveLoss})`;
+    return coinNet;
+}
+
 
 function getAdjacentBuildings(cell) {
     const cellId = cell.id.match(/\d+/)[0];
@@ -578,6 +692,63 @@ function quitGame() {
     window.location.href = "../index.html";
 }
 
+function gameOver() {
+    // Disable event listeners
+    // document.querySelectorAll('.grid-cell').forEach(cell => {
+    //     cell.removeEventListener('dragover', dragOver);
+    //     cell.removeEventListener('dragenter', dragEnter);
+    //     cell.removeEventListener('drop', drop);
+    // });
+
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const userid = currentUser._id;
+    console.log(currentUser['free-play-games-completed']);
+    const arcadeGamesCompleted = parseInt(currentUser['free-play-games-completed']) + 1;
+    console.log(arcadeGamesCompleted);
+    if (this.points > currentUser['free-play-score']){
+        currentUser['free-play-score'] = parseInt(this.points);
+    }
+
+    const gameState = {
+        gridSize: this.gridSize,
+        coins: this.coins,
+        points: this.points,
+        turn: this.turn,
+        grid: this.grid,
+        currentBuildings: this.currentBuildings,
+        selectedBuilding: this.selectedBuilding
+    };
+    var sendingPoitns = parseInt(currentUser['free-play-score']);
+    if (parseInt(currentUser['free-play-score']) < points){
+        sendingPoitns = points;
+    }
+
+    fetch(`https://spmassignment-a329.restdb.io/rest/player/${userid}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-apikey': '6667013f85f7f679ab63cd2a',
+            'cache-control': 'no-cache'
+        },
+        body: JSON.stringify({  'free-play-score': sendingPoitns, 'free-play-games-completed': arcadeGamesCompleted }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to save final game state');
+        }
+        console.log('Final game state saved successfully');
+        currentUser['free-play-games-completed'] = arcadeGamesCompleted;
+        currentUser['free-play-score'] = sendingPoitns;
+        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+    })
+    .catch(error => {
+        console.error('Error saving final game state:', error);
+    });
+
+    // Display game over modal
+    const modal = document.getElementById("gameOverModal");
+    modal.style.display = "flex";
+}
 
 // function removeBuilding(cell, row, col) {
 //     // Remove the building visually
