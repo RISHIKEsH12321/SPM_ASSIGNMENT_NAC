@@ -388,6 +388,23 @@ class ArcadeGame {
         if (this.coins <= 0) {
             this.gameOver();
         }
+
+        // Check if the grid is fully filled
+        if (this.isGridFullyFilled()) {
+            this.gameOver();
+        }
+    }
+
+    // Method to check if the grid is fully filled
+    isGridFullyFilled() {
+        for (let row = 0; row < this.grid.length; row++) {
+            for (let col = 0; col < this.grid[row].length; col++) {
+                if (this.grid[row][col] === null) {
+                    return false; // Found an empty cell
+                }
+            }
+        }
+        return true; // No empty cells found
     }
 
     // Check if a cell is valid for placement based on adjacency to existing buildings
