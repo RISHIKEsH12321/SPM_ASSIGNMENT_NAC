@@ -483,7 +483,7 @@ class ArcadeGame {
 
     updateCoinsAndPoints() {
         let newCoins = this.coins;
-        let newPoints = this.points;
+        let newPoints = 0;
     
         const directions = [
             { dx: -1, dy: 0 }, { dx: 1, dy: 0 }, // up, down
